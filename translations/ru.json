@@ -7,12 +7,8 @@
         "history": "История",
         "mailbox": "Почта",
         "shopping_list": "Список покупок",
-        "dev-services": "Службы",
-        "dev-states": "Состояния",
-        "dev-events": "События",
-        "dev-templates": "Шаблоны",
-        "dev-mqtt": "MQTT",
         "dev-info": "Информация",
+        "developer_tools": "Панель разработчика",
         "calendar": "Календарь",
         "profile": "Профиль"
     },
@@ -133,7 +129,7 @@
         "climate": {
             "off": "Выкл",
             "on": "Вкл",
-            "heat": "Нагрев",
+            "heat": "Обогрев",
             "cool": "Охлаждение",
             "idle": "Бездействие",
             "auto": "Авто",
@@ -145,7 +141,8 @@
             "high_demand": "Большая нагрузка",
             "heat_pump": "Тепловой насос",
             "gas": "Газовый",
-            "manual": "Ручной режим"
+            "manual": "Ручной режим",
+            "heat_cool": "Нагрев \/ Охлаждение"
         },
         "configurator": {
             "configure": "Настроить",
@@ -311,6 +308,28 @@
                 "add_item": "Добавить элемент",
                 "microphone_tip": "Нажмите на микрофон в правом верхнем углу и скажите “Add candy to my shopping list”"
             },
+            "developer-tools": {
+                "tabs": {
+                    "services": {
+                        "title": "Службы"
+                    },
+                    "states": {
+                        "title": "Состояния"
+                    },
+                    "events": {
+                        "title": "События"
+                    },
+                    "templates": {
+                        "title": "Шаблоны"
+                    },
+                    "mqtt": {
+                        "title": "MQTT"
+                    },
+                    "info": {
+                        "title": "О системе"
+                    }
+                }
+            },
             "history": {
                 "showing_entries": "Отображение записей за",
                 "period": "Период"
@@ -327,7 +346,7 @@
             },
             "config": {
                 "header": "Настройка Home Assistant",
-                "introduction": "Здесь можно настроить Ваши компоненты и Home Assistant. Пока что не все можно настроить из интерфейса, но мы работаем над этим.",
+                "introduction": "Здесь можно настроить Home Assistant. Пока что не все настройки доступны из интерфейса, но мы работаем над этим.",
                 "core": {
                     "caption": "Общие",
                     "description": "Проверяйте Ваш файл конфигурации и управляйте сервером",
@@ -355,6 +374,21 @@
                                 "introduction": "Управляйте Вашим сервером Home Assistant... из Home Assistant",
                                 "restart": "Перезапустить",
                                 "stop": "Остановить"
+                            },
+                            "core_config": {
+                                "edit_requires_storage": "Редактор отключен, поскольку конфигурация уже хранится в файле configuration.yaml.",
+                                "location_name": "Название для Вашего Home Assistant",
+                                "latitude": "Широта",
+                                "longitude": "Долгота",
+                                "elevation": "Высота",
+                                "elevation_meters": "метров",
+                                "time_zone": "Часовой пояс",
+                                "unit_system": "Система мер",
+                                "unit_system_imperial": "Имперская",
+                                "unit_system_metric": "Метрическая",
+                                "imperial_example": "Градус Фаренгейта, фунт",
+                                "metric_example": "Градус Цельсия, килограмм",
+                                "save_button": "Сохранить"
                             }
                         }
                     }
@@ -371,7 +405,7 @@
                     "caption": "Автоматизация",
                     "description": "Создавайте и редактируйте правила автоматизации",
                     "picker": {
-                        "header": "Редактор автоматизации",
+                        "header": "Редактор автоматизаций",
                         "introduction": "Редактор автоматизаций позволяет создавать и редактировать автоматизации.\nПожалуйста, ознакомьтесь с инструкциями по указанной ниже ссылке и убедитесь, что правильно настроили Home Assistant.",
                         "pick_automation": "Выберите автоматизацию для редактирования",
                         "no_automations": "Мы не нашли редактируемые автоматизации",
@@ -545,7 +579,9 @@
                                 }
                             },
                             "learn_more": "Узнайте больше о действиях"
-                        }
+                        },
+                        "load_error_not_editable": "Доступны для редактирования только автоматизации из automations.yaml.",
+                        "load_error_unknown": "Ошибка загрузки автоматизации ({err_no})."
                     }
                 },
                 "script": {
@@ -554,7 +590,39 @@
                 },
                 "zwave": {
                     "caption": "Z-Wave",
-                    "description": "Управляйте Вашей сетью Z-Wave"
+                    "description": "Управляйте Вашей сетью Z-Wave",
+                    "network_management": {
+                        "header": "Управление сетью Z-Wave",
+                        "introduction": "Управляйте сетью Z-Wave с помощью представленных команд. Информацию о результате выполненных команд Вы можете получить в журнале OZW."
+                    },
+                    "network_status": {
+                        "network_stopped": "Сеть Z-Wave отключена",
+                        "network_starting": "Запуск сети Z-Wave...",
+                        "network_starting_note": "Это может занять некоторое время в зависимости от размера Вашей сети.",
+                        "network_started": "Сеть Z-Wave работает",
+                        "network_started_note_some_queried": "Активные узлы были опрошены. Спящие узлы будут опрошены, когда выйдут из режима сна.",
+                        "network_started_note_all_queried": "Все узлы были опрошены."
+                    },
+                    "services": {
+                        "start_network": "Включить",
+                        "stop_network": "Отключить",
+                        "heal_network": "Исправить сеть",
+                        "test_network": "Тестировать",
+                        "soft_reset": "Сброс",
+                        "save_config": "Сохранить конфигурацию",
+                        "add_node_secure": "Добавить защищенный узел",
+                        "add_node": "Добавить узел",
+                        "remove_node": "Удалить узел",
+                        "cancel_command": "Отменить команду"
+                    },
+                    "common": {
+                        "value": "Значение",
+                        "instance": "Экземпляр",
+                        "index": "Индекс"
+                    },
+                    "values": {
+                        "header": "Значения узлов"
+                    }
                 },
                 "users": {
                     "caption": "Пользователи",
@@ -598,11 +666,18 @@
                         "delete_confirm": "Вы уверены, что хотите удалить эту интеграцию?",
                         "restart_confirm": "Перезапустите Home Assistant, чтобы завершить удаление этой интеграции",
                         "manuf": "{manufacturer}",
-                        "hub": "Подключено через",
+                        "via": "Подключено через",
                         "firmware": "Прошивка: {version}",
                         "device_unavailable": "устройство недоступно",
                         "entity_unavailable": "объект недоступен",
-                        "no_area": "Не указано"
+                        "no_area": "Не указано",
+                        "hub": "Подключено через"
+                    },
+                    "config_flow": {
+                        "external_step": {
+                            "description": "Для завершения этого шага требуется посетить внешний веб-сайт.",
+                            "open_site": "Открыть веб-сайт"
+                        }
                     }
                 },
                 "zha": {
@@ -720,7 +795,6 @@
                 },
                 "current_user": "Добро пожаловать, {fullName}! Вы вошли в систему.",
                 "is_owner": "Вы являетесь владельцем.",
-                "logout": "Выйти",
                 "change_password": {
                     "header": "Изменить пароль",
                     "current_password": "Текущий пароль",
@@ -741,11 +815,12 @@
                     "step_done": "Настройка выполнена для {step}",
                     "close": "Закрыть",
                     "submit": "Подтвердить"
-                }
+                },
+                "logout": "Выйти"
             },
             "page-authorize": {
                 "initializing": "Инициализация",
-                "authorizing_client": "Получение доступа к Home Assistant через {clientId}.",
+                "authorizing_client": "Получение доступа к {clientId}.",
                 "logging_in_with": "Провайдер аутентификации: **{authProviderName}**.",
                 "pick_auth_provider": "Или войти с помощью",
                 "abort_intro": "Вход прерван",
@@ -765,7 +840,7 @@
                                     "data": {
                                         "code": "Код двухфакторной аутентификации"
                                     },
-                                    "description": "Откройте **{mfa_module_name}** на вашем устройстве для просмотра кода двухфакторной аутентификации и введите его для подтверждения:"
+                                    "description": "Введите код двухфакторной аутентификации, полученный от **{mfa_module_name}**:"
                                 }
                             },
                             "error": {
@@ -788,7 +863,7 @@
                                     "data": {
                                         "code": "Код двухфакторной аутентификации"
                                     },
-                                    "description": "Откройте **{mfa_module_name}** на вашем устройстве для просмотра кода двухфакторной аутентификации и введите его для подтверждения:"
+                                    "description": "Введите код двухфакторной аутентификации, полученный от **{mfa_module_name}**:"
                                 }
                             },
                             "error": {
@@ -825,7 +900,7 @@
                                     "data": {
                                         "code": "Код двухфакторной аутентификации"
                                     },
-                                    "description": "Откройте **{mfa_module_name}** на вашем устройстве для просмотра кода двухфакторной аутентификации и введите его для подтверждения:"
+                                    "description": "Введите код двухфакторной аутентификации, полученный от **{mfa_module_name}**:"
                                 }
                             },
                             "error": {
@@ -858,8 +933,16 @@
                 },
                 "integration": {
                     "intro": "Устройства и сервисы представлены в Home Assistant как интеграции. Вы можете добавить их сейчас или сделать это позже в разделе настроек.",
-                    "more_integrations": "Все интеграции",
+                    "more_integrations": "Ещё",
                     "finish": "Готово"
+                },
+                "core-config": {
+                    "intro": "Добро пожаловать, {name}! Как Вы хотите назвать свой Home Assistant?",
+                    "intro_location": "Мы хотели бы знать, где Вы живете. Это поможет нам правильно отображать информацию и позволит Вам настраивать автоматизацию на основе данных о рассвете и закате. Эти данные никогда не будут переданы за пределы Вашей локальной сети.",
+                    "intro_location_detect": "Мы можем помочь Вам заполнить эту информацию, сделав однократный запрос во внешнюю службу.",
+                    "location_name_default": "Home Assistant",
+                    "button_detect": "Заполнить",
+                    "finish": "Далее"
                 }
             },
             "lovelace": {
@@ -933,12 +1016,59 @@
                 "warning": {
                     "entity_not_found": "Объект недоступен: {entity}",
                     "entity_non_numeric": "Объект не является числом: {entity}"
+                },
+                "changed_toast": {
+                    "message": "Конфигурация Lovelace была изменена, обновить эту страницу?",
+                    "refresh": "Обновить"
+                },
+                "reload_lovelace": "Перезагрузить Lovelace"
+            },
+            "page-demo": {
+                "cards": {
+                    "demo": {
+                        "demo_by": "автор: {name}",
+                        "next_demo": "Далее",
+                        "introduction": "Добро пожаловать! Здесь Вы можете увидеть лучшие пользовательские интерфейсы, созданные нашим сообществом.",
+                        "learn_more": "Узнайте больше о Home Assistant"
+                    }
+                },
+                "config": {
+                    "arsaboo": {
+                        "names": {
+                            "upstairs": "Второй этаж",
+                            "family_room": "Гостиная",
+                            "kitchen": "Кухня",
+                            "patio": "Внутренний дворик",
+                            "hallway": "Прихожая",
+                            "master_bedroom": "Спальня",
+                            "left": "Левая сторона",
+                            "right": "Правая сторона",
+                            "mirror": "Зеркало"
+                        },
+                        "labels": {
+                            "lights": "Освещение",
+                            "information": "Информация",
+                            "morning_commute": "Утренняя поездка",
+                            "commute_home": "Поездка домой",
+                            "entertainment": "Развлечения",
+                            "activity": "Процесс",
+                            "hdmi_input": "Вход HDMI",
+                            "hdmi_switcher": "Переключатель HDMI",
+                            "volume": "Громкость",
+                            "total_tv_time": "Общее время ТВ",
+                            "turn_tv_off": "Выключить телевизор",
+                            "air": "Воздух"
+                        },
+                        "unit": {
+                            "watching": "наблюдение",
+                            "minutes_abbr": "мин."
+                        }
+                    }
                 }
             }
         },
         "sidebar": {
             "log_out": "Выход",
-            "developer_tools": "Инструменты разработчика",
             "external_app_configuration": "Настройки приложения"
         },
         "common": {
@@ -1042,7 +1172,8 @@
                 "fan_mode": "Режим вентилятора",
                 "swing_mode": "Режим качания",
                 "away_mode": "Режим ожидания",
-                "aux_heat": "Дополнительный нагрев"
+                "aux_heat": "Дополнительный нагрев",
+                "preset_mode": "Режим"
             },
             "lock": {
                 "code": "Код",
@@ -1187,6 +1318,16 @@
                 "off": "Выкл",
                 "on": "Вкл",
                 "auto": "Авто"
+            },
+            "preset_mode": {
+                "none": "Не выбран",
+                "eco": "Экономия",
+                "away": "Не дома",
+                "boost": "Турбо",
+                "comfort": "Комфорт",
+                "home": "Дома",
+                "sleep": "Сон",
+                "activity": "Активность"
             }
         }
     },

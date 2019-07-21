@@ -7,12 +7,8 @@
         "history": "Historique",
         "mailbox": "Boîtes aux lettres",
         "shopping_list": "Liste de courses",
-        "dev-services": "Services",
-        "dev-states": "États",
-        "dev-events": "Événements",
-        "dev-templates": "Templates",
-        "dev-mqtt": "MQTT",
         "dev-info": "Info",
+        "developer_tools": "Outils de développement",
         "calendar": "Calendrier",
         "profile": "Profil"
     },
@@ -24,7 +20,7 @@
             "unavailable": "Indisponible"
         },
         "alarm_control_panel": {
-            "armed": "Enclenchée",
+            "armed": "Activé",
             "disarmed": "Désactivée",
             "armed_home": "Enclenchée (présent)",
             "armed_away": "Enclenchée (absent)",
@@ -145,7 +141,8 @@
             "high_demand": "Forte demande",
             "heat_pump": "Pompe à chaleur",
             "gas": "Gaz",
-            "manual": "Manuel"
+            "manual": "Manuel",
+            "heat_cool": "Chaud\/Froid"
         },
         "configurator": {
             "configure": "Configurer",
@@ -297,7 +294,7 @@
         },
         "device_tracker": {
             "home": "Maison",
-            "not_home": "Absent.e"
+            "not_home": "Absent(e)"
         },
         "person": {
             "home": "Présent",
@@ -310,6 +307,28 @@
                 "clear_completed": "Effacement accompli",
                 "add_item": "Ajouter un élément",
                 "microphone_tip": "Cliquez sur le microphone en haut à droite et dites “Ajouter des bonbons à ma liste d'achat”"
+            },
+            "developer-tools": {
+                "tabs": {
+                    "services": {
+                        "title": "Services"
+                    },
+                    "states": {
+                        "title": "États"
+                    },
+                    "events": {
+                        "title": "Événements"
+                    },
+                    "templates": {
+                        "title": "Templates"
+                    },
+                    "mqtt": {
+                        "title": "MQTT"
+                    },
+                    "info": {
+                        "title": "Info"
+                    }
+                }
             },
             "history": {
                 "showing_entries": "Afficher les entrées pour",
@@ -355,6 +374,21 @@
                                 "introduction": "Contrôlez votre serveur Home Assistant... depuis Home Assistant.",
                                 "restart": "Redémarrer",
                                 "stop": "Arrêter"
+                            },
+                            "core_config": {
+                                "edit_requires_storage": "L'éditeur est désactivé car la configuration est stockée dans configuration.yaml.",
+                                "location_name": "Nom de votre installation Home Assistant",
+                                "latitude": "Latitude",
+                                "longitude": "Longitude",
+                                "elevation": "Élévation",
+                                "elevation_meters": "mètres",
+                                "time_zone": "Fuseau horaire",
+                                "unit_system": "Système d'unité",
+                                "unit_system_imperial": "Impérial",
+                                "unit_system_metric": "Métrique",
+                                "imperial_example": "Fahrenheit, livres",
+                                "metric_example": "Celsius, kilogrammes",
+                                "save_button": "Enregistrer"
                             }
                         }
                     }
@@ -484,7 +518,7 @@
                                     "label": "Valeur numérique",
                                     "above": "Dessus",
                                     "below": "Sous",
-                                    "value_template": "Contenu du template (optionnel)"
+                                    "value_template": "Contenu du modèle (optionnel)"
                                 },
                                 "sun": {
                                     "label": "Soleil",
@@ -545,7 +579,9 @@
                                 }
                             },
                             "learn_more": "En savoir plus sur les actions"
-                        }
+                        },
+                        "load_error_not_editable": "Seules les automatisations dans automations.yaml sont modifiables.",
+                        "load_error_unknown": "Erreur lors du chargement de l'automatisation ( {err_no} )."
                     }
                 },
                 "script": {
@@ -554,7 +590,22 @@
                 },
                 "zwave": {
                     "caption": "Z-Wave",
-                    "description": "Gérez votre réseau Z-Wave"
+                    "description": "Gérez votre réseau Z-Wave",
+                    "network_status": {
+                        "network_stopped": "Réseau Z-Wave arrêté",
+                        "network_starting": "Démarrage du réseau Z-Wave...",
+                        "network_starting_note": "Ceci peut prendre un certain temps en fonction du débit de votre réseau.",
+                        "network_started": "Le réseau Z-Wave a été démarré"
+                    },
+                    "services": {
+                        "start_network": "Démarrer le réseau",
+                        "stop_network": "Arrêter le réseau",
+                        "test_network": "Tester le réseau",
+                        "save_config": "Enregistrer la configuration",
+                        "add_node_secure": "Ajouter un nœud sécurisé",
+                        "add_node": "Ajouter un nœud",
+                        "remove_node": "Supprimer un nœud"
+                    }
                 },
                 "users": {
                     "caption": "Utilisateurs",
@@ -581,7 +632,8 @@
                 "cloud": {
                     "caption": "Cloud Home Assistant",
                     "description_login": "Connecté en tant que {email}",
-                    "description_not_login": "Pas connecté"
+                    "description_not_login": "Pas connecté",
+                    "description_features": "Contrôle hors de la maison, intégration avec Alexa et Google Assistant."
                 },
                 "integrations": {
                     "caption": "Intégrations",
@@ -597,11 +649,18 @@
                         "delete_confirm": "Êtes-vous sûr de vouloir supprimer cette intégration?",
                         "restart_confirm": "Redémarrez Home Assistant pour terminer la suppression de cette intégration",
                         "manuf": "par {manufacturer}",
-                        "hub": "Connecté via",
+                        "via": "Connecté via",
                         "firmware": "Firmware: {version}",
                         "device_unavailable": "appareil indisponible",
                         "entity_unavailable": "entité indisponible",
-                        "no_area": "Pas de pièce"
+                        "no_area": "Pas de pièce",
+                        "hub": "Connecté via"
+                    },
+                    "config_flow": {
+                        "external_step": {
+                            "description": "Cette étape nécessite la visite d'un site Web externe pour être complétée.",
+                            "open_site": "Ouvrir le site"
+                        }
                     }
                 },
                 "zha": {
@@ -719,7 +778,6 @@
                 },
                 "current_user": "Vous êtes actuellement connecté tant que {fullName}.",
                 "is_owner": "Vous êtes propriétaire",
-                "logout": "Déconnexion",
                 "change_password": {
                     "header": "Changer le mot de passe",
                     "current_password": "Mot de passe actuel",
@@ -740,7 +798,8 @@
                     "step_done": "Configuration terminée pour {step}",
                     "close": "Fermer",
                     "submit": "Envoyer"
-                }
+                },
+                "logout": "Déconnexion"
             },
             "page-authorize": {
                 "initializing": "Initialisation",
@@ -854,6 +913,19 @@
                         "required_fields": "Remplissez tous les champs requis",
                         "password_not_match": "Les mots de passe ne correspondent pas"
                     }
+                },
+                "integration": {
+                    "intro": "Les appareils et les services sont représentés dans Home Assistant sous forme d’intégrations. Vous pouvez les configurer maintenant ou le faire plus tard à partir de l'écran de configuration.",
+                    "more_integrations": "Plus",
+                    "finish": "Terminer"
+                },
+                "core-config": {
+                    "intro": "Bonjour {name}, bienvenue dans Home Assistant. Comment voudriez-vous nommer votre maison?",
+                    "intro_location": "Nous aimerions savoir où vous habitez. Ces informations vous aideront à afficher des informations et à configurer des automatismes basés sur le soleil. Ces données ne sont jamais partagées en dehors de votre réseau.",
+                    "intro_location_detect": "Nous pouvons vous aider à renseigner ces informations en adressant une demande unique à un service externe.",
+                    "location_name_default": "Maison",
+                    "button_detect": "Détecter",
+                    "finish": "Suivant"
                 }
             },
             "lovelace": {
@@ -867,6 +939,14 @@
                         "title": "Bienvenue à la maison",
                         "no_devices": "Cette page vous permet de contrôler vos périphériques. Toutefois, il semble que vous n’ayez pas encore configuré de périphériques. Rendez-vous sur la page des intégrations pour commencer.",
                         "go_to_integrations_page": "Aller à la page des intégrations."
+                    },
+                    "picture-elements": {
+                        "hold": "Maintenir:",
+                        "tap": "Appuyez sur:",
+                        "navigate_to": "Accédez à {location}",
+                        "toggle": "Activer\/désactiver {name}",
+                        "call_service": "Appeler le service {name}",
+                        "more_info": "Afficher plus d'informations: {name}"
                     }
                 },
                 "editor": {
@@ -894,9 +974,9 @@
                         "delete": "Supprimer la vue"
                     },
                     "save_config": {
-                        "header": "Prenez le controle de Lovelace UI",
+                        "header": "Prenez le contrôle de votre Interface Lovelace",
                         "para": "Par défaut, Home Assistant maintient votre interface utilisateur et la met à jour lorsque de nouvelles entités ou de nouveaux composants Lovelace sont disponibles. Si vous prenez le contrôle, nous ne ferons plus les changements automatiquement pour vous.",
-                        "para_sure": "Êtes-vous sûr de vouloir prendre le controle de l'interface utilisateur?",
+                        "para_sure": "Êtes-vous sûr de vouloir prendre le contrôle de l'interface utilisateur?",
                         "cancel": "Oublie ce que j'ai dit, c'est pas grave.",
                         "save": "Prenez le contrôle"
                     },
@@ -919,12 +999,60 @@
                 "warning": {
                     "entity_not_found": "Entité non disponible: {entity}",
                     "entity_non_numeric": "L'entité est non numérique: {entity}"
+                },
+                "changed_toast": {
+                    "message": "La configuration de Lovelace a été modifiée, voulez-vous rafraîchir?",
+                    "refresh": "Rafraîchir"
+                },
+                "reload_lovelace": "Recharger Lovelace"
+            },
+            "page-demo": {
+                "cards": {
+                    "demo": {
+                        "demo_by": "par {name}",
+                        "next_demo": "Prochaine démo",
+                        "introduction": "Bienvenue à la maison ! Vous êtes sur la démo de Home Assistant, où nous présentons les meilleures interfaces utilisateur créées par notre communauté.",
+                        "learn_more": "En savoir plus sur Home Assistant"
+                    }
+                },
+                "config": {
+                    "arsaboo": {
+                        "names": {
+                            "upstairs": "A l'étage",
+                            "family_room": "Chambre Familiale",
+                            "kitchen": "Cuisine",
+                            "patio": "Patio",
+                            "hallway": "Couloir",
+                            "master_bedroom": "Chambre principale",
+                            "left": "Gauche",
+                            "right": "Droite",
+                            "mirror": "Miroir"
+                        },
+                        "labels": {
+                            "lights": "Lumières",
+                            "information": "Information",
+                            "morning_commute": "Trajet du matin",
+                            "commute_home": "Se rendre à la maison",
+                            "entertainment": "Divertissement",
+                            "activity": "Activité",
+                            "hdmi_input": "Entrée HDMI",
+                            "hdmi_switcher": "Sélecteur HDMI",
+                            "volume": "Volume",
+                            "total_tv_time": "Temps total de télévision",
+                            "turn_tv_off": "Éteindre la télévision",
+                            "air": "Air"
+                        },
+                        "unit": {
+                            "watching": "en train de regarder",
+                            "minutes_abbr": "min"
+                        }
+                    }
                 }
             }
         },
         "sidebar": {
             "log_out": "Déconnexion",
-            "developer_tools": "Outils de développement"
+            "external_app_configuration": "Configuration de l'application"
         },
         "common": {
             "loading": "Chargement",
@@ -1027,7 +1155,8 @@
                 "fan_mode": "Mode de ventilation",
                 "swing_mode": "Mode de balancement",
                 "away_mode": "Mode \"Absent\"",
-                "aux_heat": "Chauffage d'appoint"
+                "aux_heat": "Chauffage d'appoint",
+                "preset_mode": "Préréglage"
             },
             "lock": {
                 "code": "Code",
@@ -1172,6 +1301,16 @@
                 "off": "Off",
                 "on": "On",
                 "auto": "Auto"
+            },
+            "preset_mode": {
+                "none": "Aucun",
+                "eco": "Eco",
+                "away": "Absent",
+                "boost": "Renforcer",
+                "comfort": "Confort",
+                "home": "Accueil",
+                "sleep": "Veille",
+                "activity": "Activité"
             }
         }
     },

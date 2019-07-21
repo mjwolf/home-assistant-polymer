@@ -38,7 +38,12 @@ class HaClimateState extends LocalizeMixin(PolymerElement) {
 
       <div class="target">
         <template is="dom-if" if="[[_hasKnownState(stateObj.state)]]">
-          <span class="state-label"> [[_localizeState(stateObj.state)]] </span>
+          <span class="state-label">
+            [[_localizeState(localize, stateObj)]]
+            <template is="dom-if" if="[[stateObj.attributes.preset_mode]]">
+              - [[_localizePreset(localize, stateObj.attributes.preset_mode)]]
+            </template>
+          </span>
         </template>
         <div class="unit">[[computeTarget(hass, stateObj)]]</div>
       </div>
@@ -83,7 +88,7 @@ class HaClimateState extends LocalizeMixin(PolymerElement) {
       stateObj.attributes.target_temp_low != null &&
       stateObj.attributes.target_temp_high != null
     ) {
-      return `${stateObj.attributes.target_temp_low} - ${
+      return `${stateObj.attributes.target_temp_low}-${
         stateObj.attributes.target_temp_high
       } ${hass.config.unit_system.temperature}`;
     }
@@ -96,9 +101,9 @@ class HaClimateState extends LocalizeMixin(PolymerElement) {
       stateObj.attributes.target_humidity_low != null &&
       stateObj.attributes.target_humidity_high != null
     ) {
-      return `${stateObj.attributes.target_humidity_low} - ${
+      return `${stateObj.attributes.target_humidity_low}-${
         stateObj.attributes.target_humidity_high
-      } %`;
+      }%`;
     }
     if (stateObj.attributes.humidity != null) {
       return `${stateObj.attributes.humidity} %`;
@@ -111,8 +116,19 @@ class HaClimateState extends LocalizeMixin(PolymerElement) {
     return state !== "unknown";
   }
 
-  _localizeState(state) {
-    return this.localize(`state.climate.${state}`) || state;
+  _localizeState(localize, stateObj) {
+    const stateString = localize(`state.climate.${stateObj.state}`);
+    return stateObj.attributes.hvac_action
+      ? `${localize(
+          `state_attributes.climate.hvac_action.${
+            stateObj.attributes.hvac_action
+          }`
+        )} (${stateString})`
+      : stateString;
+  }
+
+  _localizePreset(localize, preset) {
+    return localize(`state_attributes.climate.preset_mode.${preset}`) || preset;
   }
 }
 customElements.define("ha-climate-state", HaClimateState);

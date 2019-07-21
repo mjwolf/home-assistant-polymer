@@ -20,8 +20,8 @@ gulp.task(
       "gen-service-worker-dev",
       "gen-icons",
       "gen-pages-dev",
-      "gen-index-html-dev",
-      "build-translations"
+      "gen-index-app-dev",
+      gulp.series("create-test-translation", "build-translations")
     ),
     "copy-static",
     "webpack-watch-app"
@@ -44,7 +44,7 @@ gulp.task(
     ),
     gulp.parallel(
       "gen-pages-prod",
-      "gen-index-html-prod",
+      "gen-index-app-prod",
       "gen-service-worker-prod"
     )
   )

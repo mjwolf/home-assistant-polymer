@@ -2,7 +2,6 @@ import "@polymer/app-layout/app-header-layout/app-header-layout";
 import "@polymer/app-layout/app-header/app-header";
 import "@polymer/app-layout/app-toolbar/app-toolbar";
 import "@polymer/iron-icon/iron-icon";
-import "@polymer/paper-card/paper-card";
 import "@polymer/paper-item/paper-item";
 import "@polymer/paper-item/paper-item-body";
 import "@polymer/paper-icon-button/paper-icon-button";
@@ -10,6 +9,7 @@ import { html } from "@polymer/polymer/lib/utils/html-tag";
 import { PolymerElement } from "@polymer/polymer/polymer-element";
 
 import "../../src/managers/notification-manager";
+import "../../src/components/ha-card";
 
 const DEMOS = require.context("./demos", true, /^(.*\.(ts$))[^.]*$/im);
 
@@ -38,13 +38,13 @@ class HaGallery extends PolymerElement {
         align-items: start;
       }
 
-      .pickers paper-card {
+      .pickers ha-card {
         width: 400px;
         display: block;
         margin: 16px 8px;
       }
 
-      .pickers paper-card:last-child {
+      .pickers ha-card:last-child {
         margin-bottom: 16px;
       }
 
@@ -56,7 +56,7 @@ class HaGallery extends PolymerElement {
         color: var(--primary-color);
       }
 
-      a paper-item {
+      a {
         color: var(--primary-text-color);
         text-decoration: none;
       }
@@ -79,7 +79,7 @@ class HaGallery extends PolymerElement {
           <div id='demo'></div>
           <template is='dom-if' if='[[!_demo]]'>
             <div class='pickers'>
-              <paper-card heading="Lovelace card demos">
+              <ha-card header="Lovelace card demos">
                 <div class='card-content intro'>
                   <p>
                     Lovelace has many different cards. Each card allows the user to tell a different story about what is going on in their house. These cards are very customizable, as no household is the same.
@@ -101,9 +101,9 @@ class HaGallery extends PolymerElement {
                     </paper-item>
                   </a>
                 </template>
-              </paper-card>
+              </ha-card>
 
-              <paper-card heading="More Info demos">
+              <ha-card header="More Info demos">
                 <div class='card-content intro'>
                   <p>
                     More info screens show up when an entity is clicked.
@@ -117,9 +117,9 @@ class HaGallery extends PolymerElement {
                     </paper-item>
                   </a>
                 </template>
-              </paper-card>
+              </ha-card>
 
-              <paper-card heading="Util demos">
+              <ha-card header="Util demos">
                 <div class='card-content intro'>
                   <p>
                     Test pages for our utility functions.
@@ -133,17 +133,27 @@ class HaGallery extends PolymerElement {
                     </paper-item>
                   </a>
                 </template>
-              </paper-card>
+              </ha-card>
             </div>
           </template>
         </div>
       </app-header-layout>
-      <notification-manager id='notifications'></notification-manager>
+      <notification-manager hass=[[_fakeHass]] id='notifications'></notification-manager>
     `;
   }
 
   static get properties() {
     return {
+      _fakeHass: {
+        type: Object,
+        // Just enough for computeRTL
+        value: {
+          language: "en",
+          translationMetadata: {
+            translations: {},
+          },
+        },
+      },
       _demo: {
         type: String,
         value: document.location.hash.substr(1),

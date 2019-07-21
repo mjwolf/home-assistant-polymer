@@ -7,12 +7,8 @@
         "history": "Historik",
         "mailbox": "Postkasse",
         "shopping_list": "Indkøbsliste",
-        "dev-services": "Services",
-        "dev-states": "Tilstand",
-        "dev-events": "Begivenheder",
-        "dev-templates": "Skabeloner",
-        "dev-mqtt": "MQTT",
         "dev-info": "Udvikler Information",
+        "developer_tools": "Udviklerværktøjer",
         "calendar": "Kalender",
         "profile": "Profil"
     },
@@ -145,7 +141,8 @@
             "high_demand": "Høj efterspørgsel",
             "heat_pump": "Varmepumpe",
             "gas": "Gas",
-            "manual": "Manual"
+            "manual": "Manual",
+            "heat_cool": "Varme\/køl"
         },
         "configurator": {
             "configure": "Konfigurer",
@@ -280,7 +277,8 @@
         "default": {
             "unknown": "Ukendt",
             "unavailable": "Utilgængelig",
-            "error": "Fejl"
+            "error": "Fejl",
+            "entity_not_found": "Enheden blev ikke fundet"
         },
         "alarm_control_panel": {
             "armed": "Tilkoblet",
@@ -300,7 +298,7 @@
         },
         "person": {
             "home": "Hjemme",
-            "not_home": "Ikke hjemme"
+            "not_home": "Ude"
         }
     },
     "ui": {
@@ -309,6 +307,28 @@
                 "clear_completed": "Klar afsluttet",
                 "add_item": "Tilføj element",
                 "microphone_tip": "Tryk på mikrofonen øverst til højre og sig “Add candy to my shopping list”"
+            },
+            "developer-tools": {
+                "tabs": {
+                    "services": {
+                        "title": "Services"
+                    },
+                    "states": {
+                        "title": "Tilstand"
+                    },
+                    "events": {
+                        "title": "Begivenheder"
+                    },
+                    "templates": {
+                        "title": "Skabelon"
+                    },
+                    "mqtt": {
+                        "title": "MQTT"
+                    },
+                    "info": {
+                        "title": "Udvikler Information"
+                    }
+                }
             },
             "history": {
                 "showing_entries": "Viser emner for",
@@ -354,6 +374,21 @@
                                 "introduction": "Kontroller din Home Assistant server... fra Home Assistant.",
                                 "restart": "Genstart",
                                 "stop": "Stop"
+                            },
+                            "core_config": {
+                                "edit_requires_storage": "Editor er deaktiveret, fordi config er gemt i configuration.yaml.",
+                                "location_name": "Navn på din Home Assistant-installation",
+                                "latitude": "Breddegrad",
+                                "longitude": "Længdegrad",
+                                "elevation": "Højde",
+                                "elevation_meters": "meter",
+                                "time_zone": "Tidszone",
+                                "unit_system": "Enheds system",
+                                "unit_system_imperial": "Imperial",
+                                "unit_system_metric": "Metriske",
+                                "imperial_example": "Fahrenheit, pund",
+                                "metric_example": "Celsius, kg",
+                                "save_button": "Gem"
                             }
                         }
                     }
@@ -544,7 +579,9 @@
                                 }
                             },
                             "learn_more": "Lær om handlinger"
-                        }
+                        },
+                        "load_error_not_editable": "Kun automatiseringer i automations.yaml kan redigeres.",
+                        "load_error_unknown": "Fejl ved indlæsning af automatisering ( {err_no} )."
                     }
                 },
                 "script": {
@@ -553,7 +590,39 @@
                 },
                 "zwave": {
                     "caption": "Z-Wave",
-                    "description": "Administrer dit Z-Wave netværk"
+                    "description": "Administrer dit Z-Wave netværk",
+                    "network_management": {
+                        "header": "Administration af Z-Wave netværk",
+                        "introduction": "Kør kommandoer, der påvirker Z-Wave-netværket. Du får ikke feedback på, om de fleste kommandoer lykkedes, men du kan kontrollere OZW-loggen for at forsøge at finde ud af det."
+                    },
+                    "network_status": {
+                        "network_stopped": "Z-Wave netværk stoppet",
+                        "network_starting": "Starter Z-Wave netværk...",
+                        "network_starting_note": "Dette kan tage et stykke tid, afhængigt af netværkets størrelse.",
+                        "network_started": "Z-Wave netværk startet",
+                        "network_started_note_some_queried": "Vågne noder er blevet forespurgt. Sovende noder vil blive forespurgt, når de vågner.",
+                        "network_started_note_all_queried": "Alle noder er blevet forespurgt."
+                    },
+                    "services": {
+                        "start_network": "Start netværk",
+                        "stop_network": "Stop netværk",
+                        "heal_network": "Hel netværk",
+                        "test_network": "Test netværk",
+                        "soft_reset": "Soft reset",
+                        "save_config": "Gem konfiguration",
+                        "add_node_secure": "Tilføj sikker node",
+                        "add_node": "Tilføj node",
+                        "remove_node": "Fjern node",
+                        "cancel_command": "Annuller kommando"
+                    },
+                    "common": {
+                        "value": "Værdi",
+                        "instance": "Instans",
+                        "index": "Indeks"
+                    },
+                    "values": {
+                        "header": "Node værdier"
+                    }
                 },
                 "users": {
                     "caption": "Brugere",
@@ -580,7 +649,8 @@
                 "cloud": {
                     "caption": "Home Assistant Cloud",
                     "description_login": "Logget ind som {email}",
-                    "description_not_login": "Ikke logget ind"
+                    "description_not_login": "Ikke logget ind",
+                    "description_features": "Betjen væk fra hjemmet, integrer med Alexa og Google Assistant."
                 },
                 "integrations": {
                     "caption": "Integrationer",
@@ -596,11 +666,18 @@
                         "delete_confirm": "Er du sikker på, at du vil fjerne denne integration?",
                         "restart_confirm": "Genstart Home Assistant for at afslutte fjernelsen af denne integration",
                         "manuf": "af {manufacturer}",
-                        "hub": "Forbundet via",
+                        "via": "Forbundet via",
                         "firmware": "Firmware: {version}",
                         "device_unavailable": "enhed utilgængelig",
                         "entity_unavailable": "entitet utilgængelig",
-                        "no_area": "Intet område"
+                        "no_area": "Intet område",
+                        "hub": "Tilsluttet via"
+                    },
+                    "config_flow": {
+                        "external_step": {
+                            "description": "Dette trin kræver, at du besøger et eksternt websted.",
+                            "open_site": "Åbn websted"
+                        }
                     }
                 },
                 "zha": {
@@ -608,13 +685,18 @@
                     "description": "Zigbee Home Automation opsætning",
                     "services": {
                         "reconfigure": "Genkonfigurer ZHA-enhed (helbred enhed). Brug dette hvis du har problemer med enheden. Hvis den pågældende enhed er en batteridrevet enhed skal du sørge for at den er vågen og accepterer kommandoer når du bruger denne service.",
-                        "updateDeviceName": "Angiv et brugerdefineret navn til denne enhed i enhedsopsætningen"
+                        "updateDeviceName": "Angiv et brugerdefineret navn til denne enhed i enhedsopsætningen",
+                        "remove": "Fjern en enhed fra ZigBee netværket."
                     },
                     "device_card": {
-                        "area_picker_label": "Område"
+                        "device_name_placeholder": "Navn",
+                        "area_picker_label": "Område",
+                        "update_name_button": "Opdater navn"
                     },
                     "add_device_page": {
-                        "spinner": "Søger efter ZHA Zigbee-enheder..."
+                        "header": "Zigbee Home Automation - Tilføj enheder",
+                        "spinner": "Søger efter ZHA Zigbee-enheder...",
+                        "discovery_text": "Fundne enheder vil dukke op her. Følg instruktionerne for din enhed(er) og sæt enhed(erne) i parringstilstand."
                     }
                 },
                 "area_registry": {
@@ -713,7 +795,6 @@
                 },
                 "current_user": "Du er logget ind som {fullName} .",
                 "is_owner": "Du er ejer.",
-                "logout": "Log af",
                 "change_password": {
                     "header": "Skift adgangskode",
                     "current_password": "Nuværende adgangskode",
@@ -734,7 +815,8 @@
                     "step_done": "Opsætning af {step} færdig",
                     "close": "Luk",
                     "submit": "Gem og afslut"
-                }
+                },
+                "logout": "Log af"
             },
             "page-authorize": {
                 "initializing": "Initialiserer",
@@ -848,6 +930,19 @@
                         "required_fields": "Udfyld alle obligatoriske felter",
                         "password_not_match": "Adgangskoderne er ikke ens"
                     }
+                },
+                "integration": {
+                    "intro": "Enheder og tjenester er repræsenteret i Home Assistant som integrationer. Du kan konfigurere dem nu eller gøre det senere fra konfigurationsskærmen.",
+                    "more_integrations": "Mere",
+                    "finish": "Afslut"
+                },
+                "core-config": {
+                    "intro": "Hej {name}, velkommen til Home Assistant. Hvordan vil du navngive dit hjem?",
+                    "intro_location": "Vi vil gerne vide, hvor du bor. Disse oplysninger hjælper med at vise information og opsætte solbaserede automationer. Disse data deles aldrig uden for dit netværk.",
+                    "intro_location_detect": "Vi kan hjælpe dig med at udfylde disse oplysninger ved at foretage en engangsforespørgsel til en ekstern service.",
+                    "location_name_default": "Hjem",
+                    "button_detect": "Detekter",
+                    "finish": "Næste"
                 }
             },
             "lovelace": {
@@ -861,6 +956,14 @@
                         "title": "Velkommen hjem",
                         "no_devices": "Denne side giver dig mulighed for at styre dine enheder, men det ser ud til, at du endnu ikke har konfigureret enheder. Gå til integrationssiden for at komme i gang.",
                         "go_to_integrations_page": "Gå til integrationssiden."
+                    },
+                    "picture-elements": {
+                        "hold": "Hold:",
+                        "tap": "Tryk på:",
+                        "navigate_to": "Naviger til {location}",
+                        "toggle": "Skift {navn}",
+                        "call_service": "Kald service {name}",
+                        "more_info": "Vis mere-info: {Name}"
                     }
                 },
                 "editor": {
@@ -913,12 +1016,60 @@
                 "warning": {
                     "entity_not_found": "Enhed ikke tilgængelig: {entity}",
                     "entity_non_numeric": "Enhed er ikke-numerisk: {entity}"
+                },
+                "changed_toast": {
+                    "message": "Lovelace-konfigurationen blev opdateret, vil du genindlæse?",
+                    "refresh": "Opdater"
+                },
+                "reload_lovelace": "Genindlæs Lovelace"
+            },
+            "page-demo": {
+                "cards": {
+                    "demo": {
+                        "demo_by": "af {name}",
+                        "next_demo": "Næste demo",
+                        "introduction": "Velkommen hjem! Du er kommet til Home assistant's demo hvor vi viser de bedste bruger interfaces lavet i bruger gruppen.\n",
+                        "learn_more": "Læs mere om Home-Assistent"
+                    }
+                },
+                "config": {
+                    "arsaboo": {
+                        "names": {
+                            "upstairs": "Ovenpå",
+                            "family_room": "Alrum",
+                            "kitchen": "Køkken",
+                            "patio": "Terrasse",
+                            "hallway": "Gang",
+                            "master_bedroom": "Soveværelse",
+                            "left": "Venstre",
+                            "right": "Højre",
+                            "mirror": "Spejl"
+                        },
+                        "labels": {
+                            "lights": "Lys",
+                            "information": "Information",
+                            "morning_commute": "Morgen pendler",
+                            "commute_home": "Pendle til hjemmet",
+                            "entertainment": "Underholdning",
+                            "activity": "Aktivitet",
+                            "hdmi_input": "HDMI indgang",
+                            "hdmi_switcher": "HDMI skifter",
+                            "volume": "Lydstyrke",
+                            "total_tv_time": "Total TV tid",
+                            "turn_tv_off": "Sluk TV",
+                            "air": "Luft"
+                        },
+                        "unit": {
+                            "watching": "Ser",
+                            "minutes_abbr": "min"
+                        }
+                    }
                 }
             }
         },
         "sidebar": {
             "log_out": "Log af",
-            "developer_tools": "Udviklerværktøjer"
+            "external_app_configuration": "App Konfiguration"
         },
         "common": {
             "loading": "Indlæser",
@@ -1021,7 +1172,8 @@
                 "fan_mode": "Ventilator tilstand",
                 "swing_mode": "Swing tilstand",
                 "away_mode": "Ude af huset-modus",
-                "aux_heat": "Støtte-varme"
+                "aux_heat": "Støtte-varme",
+                "preset_mode": "Forudindstilling"
             },
             "lock": {
                 "code": "Kode",
@@ -1166,6 +1318,16 @@
                 "off": "Slukket",
                 "on": "Tændt",
                 "auto": "Automatisk"
+            },
+            "preset_mode": {
+                "none": "Ingen",
+                "eco": "Eco",
+                "away": "Ude",
+                "boost": "Boost",
+                "comfort": "Komfort",
+                "home": "Hjemme",
+                "sleep": "Sover",
+                "activity": "Aktivitet"
             }
         }
     },

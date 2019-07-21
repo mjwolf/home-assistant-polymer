@@ -7,12 +7,8 @@
         "history": "ประวัติการทำงาน",
         "mailbox": "กล่องจดหมาย",
         "shopping_list": "รายการซื้อของ",
-        "dev-services": "บริการ",
-        "dev-states": "สถานะ",
-        "dev-events": "เหตุการณ์",
-        "dev-templates": "แม่แบบ",
-        "dev-mqtt": "MQTT",
         "dev-info": "ข้อมูล",
+        "developer_tools": "เครื่องมือสำหรับนักพัฒนา",
         "calendar": "ปฏิทิน",
         "profile": "ข้อมูลส่วนตัว"
     },
@@ -311,6 +307,25 @@
                 "add_item": "เพิ่มรายการใหม่",
                 "microphone_tip": "ลองแตะไมโครโฟนที่ด้านบนขวาและพูดว่า \"เพิ่มลูกอมลงในรายการช้อปปิ้งของฉัน\" ดูสิ!"
             },
+            "developer-tools": {
+                "tabs": {
+                    "services": {
+                        "title": "บริการ"
+                    },
+                    "states": {
+                        "title": "สถานะ"
+                    },
+                    "events": {
+                        "title": "เหตุการณ์"
+                    },
+                    "templates": {
+                        "title": "แม่แบบ"
+                    },
+                    "mqtt": {
+                        "title": "MQTT"
+                    }
+                }
+            },
             "history": {
                 "showing_entries": "วันที่ต้องการแสดง",
                 "period": "ช่วงเวลา"
@@ -355,6 +370,21 @@
                                 "introduction": "สำหรับควบคุมเซิร์ฟเวอร์ Home Assistant อีกทีนึงจาก Home Assistant อีกที",
                                 "restart": "เริ่มต้นใหม่",
                                 "stop": "หยุด"
+                            },
+                            "core_config": {
+                                "edit_requires_storage": "ตัวช่วยแก้ไขถูกปิดใช้งาน เนื่องจากการกำหนดค่าถูกกำหนดไว้ในไฟล์ configuration.yaml",
+                                "location_name": "ชื่อในการติดตั้ง Home Assistant ของคุณ",
+                                "latitude": "ละติจูด",
+                                "longitude": "ลองจิจูด",
+                                "elevation": "มุมเงย",
+                                "elevation_meters": "เมตร",
+                                "time_zone": "เขตเวลา",
+                                "unit_system": "ระบบหน่วย",
+                                "unit_system_imperial": "ของจักรพรรดิ",
+                                "unit_system_metric": "เมตริก",
+                                "imperial_example": "ฟาเรนไฮต์, ปอนด์",
+                                "metric_example": "เซลเซียส, กิโลกรัม",
+                                "save_button": "บันทึก"
                             }
                         }
                     }
@@ -545,7 +575,9 @@
                                 }
                             },
                             "learn_more": "เรียนรู้เพิ่มเติมเกี่ยวกับ Action"
-                        }
+                        },
+                        "load_error_not_editable": "ระบบอัตโนมัติที่อยู่ในไฟล์ Automations.yaml เท่านั้นที่สามารถแก้ไขได้",
+                        "load_error_unknown": "เกิดข้อผิดพลาดในการโหลดระบบอัตโนมัติ ({err_no})"
                     }
                 },
                 "script": {
@@ -581,7 +613,8 @@
                 "cloud": {
                     "caption": "Home Assistant Cloud",
                     "description_login": "ลงชื่อเข้าใช้เป็น {email}",
-                    "description_not_login": "ยังไม่ได้เข้าสู่ระบบ"
+                    "description_not_login": "ยังไม่ได้เข้าสู่ระบบ",
+                    "description_features": "ควบคุมการทำงานเมื่อออกจากบ้านร่วมกับ Alexa และ Google Assistant"
                 },
                 "integrations": {
                     "caption": "การทำงานร่วมกัน",
@@ -597,11 +630,17 @@
                         "delete_confirm": "แน่ใจหรือว่าต้องการจะลบการบูรณาการนี้",
                         "restart_confirm": "เริ่ม Home Assistant ใหม่หลังจากลบการบูรณาการนี้",
                         "manuf": "โดย {manufacturer}",
-                        "hub": "เชื่อมต่อแล้ว",
+                        "via": "เชื่อมต่อแล้ว",
                         "firmware": "Firmware: {version}",
                         "device_unavailable": "อุปกรณ์นี้ไม่พร้อมใช้งาน",
                         "entity_unavailable": "Entity นี้ไม่พร้อมใช้งาน",
                         "no_area": "ไม่มีห้อง"
+                    },
+                    "config_flow": {
+                        "external_step": {
+                            "description": "ขั้นตอนนี้กำหนดให้คุณเยี่ยมชมเว็บไซต์ภายนอกเพื่อทำให้การดำเนินการสมบูรณ์",
+                            "open_site": "เปิดเว็บไซต์"
+                        }
                     }
                 },
                 "zha": {
@@ -719,7 +758,6 @@
                 },
                 "current_user": "ขณะนี้คุณเข้าสู่ระบบในชื่อ {fullName}",
                 "is_owner": "ในฐานะ \"เจ้าของ\"",
-                "logout": "ชื่อผู้ใช้",
                 "change_password": {
                     "header": "เปลี่ยนรหัสผ่าน",
                     "current_password": "รหัสผ่านปัจจุบัน",
@@ -854,6 +892,19 @@
                         "required_fields": "กรอกข้อมูลในฟิลด์ที่จำเป็นทั้งหมด",
                         "password_not_match": "รหัสผ่านไม่ตรงกัน"
                     }
+                },
+                "integration": {
+                    "intro": "อุปกรณ์และบริการแสดงอยู่ใน Home Assistant เป็นการผสานรวม คุณสามารถตั้งค่าตอนนี้หรือทำภายหลังจากหน้าจอการตั้งค่า",
+                    "more_integrations": "เพิ่มเติม",
+                    "finish": "เสร็จสิ้น"
+                },
+                "core-config": {
+                    "intro": "สวัสดี {name} ยินดีต้อนรับสู่ Home Assistant คุณต้องการตั้งชื่อบ้านของคุณยังไงดีละ",
+                    "intro_location": "เราต้องการทราบว่าคุณอาศัยอยู่ที่ไหน ข้อมูลนี้จะช่วยในการแสดงข้อมูลต่างๆ และตั้งค่าการทำงานอัตโนมัติตามดวงอาทิตย์ ข้อมูลนี้จะไม่เปิดเผยไปยังนอกเครือข่ายของคุณ",
+                    "intro_location_detect": "เราสามารถช่วยคุณกรอกข้อมูลนี้ได้โดยทำการร้องขอแบบครั้งเดียวไปยังบริการภายนอก",
+                    "location_name_default": "อยู่บ้าน",
+                    "button_detect": "ตรวจจับ",
+                    "finish": "ต่อไป"
                 }
             },
             "lovelace": {
@@ -867,6 +918,14 @@
                         "title": "ยินดีต้อนรับกลับบ้าน",
                         "no_devices": "หน้านี้ช่วยให้คุณควบคุมอุปกรณ์ของคุณได้ แต่ยังไงก็ตามมันดูเหมือนว่าคุณยังไม่ได้ติดตั้งอุปกรณ์อะไรไว้เลย ไปยัง 'หน้าการทำงานด้วยกัน' เพื่อเริ่มติดตั้ง",
                         "go_to_integrations_page": "ไปที่หน้าการรวมระบบ"
+                    },
+                    "picture-elements": {
+                        "hold": "ถือ:",
+                        "tap": "แตะ:",
+                        "navigate_to": "นำทางไปยัง {location}",
+                        "toggle": "สลับ {name}",
+                        "call_service": "เรียกบริการ {name}",
+                        "more_info": "แสดงข้อมูลเพิ่มเติม: {name}"
                     }
                 },
                 "editor": {
@@ -919,12 +978,17 @@
                 "warning": {
                     "entity_not_found": "Entity ไม่พร้อมใช้งาน: {entity}",
                     "entity_non_numeric": "Entity ที่ไม่ใช่ตัวเลข: {entity}"
-                }
+                },
+                "changed_toast": {
+                    "message": "อัพเดทการกำหนดค่าส่วนแสดงผล Lovelace แล้ว คุณต้องการจะรีเฟรชหน้าหรือไม่",
+                    "refresh": "รีเฟรช"
+                },
+                "reload_lovelace": "โหลดส่วนแสดงผล Lovelace ใหม่"
             }
         },
         "sidebar": {
             "log_out": "ออกจากระบบ",
-            "developer_tools": "เครื่องมือสำหรับนักพัฒนา"
+            "external_app_configuration": "การกำหนดค่าแอพ"
         },
         "common": {
             "loading": "กำลังโหลด",

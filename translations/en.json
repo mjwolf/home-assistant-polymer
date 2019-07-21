@@ -7,12 +7,8 @@
         "history": "History",
         "mailbox": "Mailbox",
         "shopping_list": "Shopping list",
-        "dev-services": "Services",
-        "dev-states": "States",
-        "dev-events": "Events",
-        "dev-templates": "Templates",
-        "dev-mqtt": "MQTT",
         "dev-info": "Info",
+        "developer_tools": "Developer Tools",
         "calendar": "Calendar",
         "profile": "Profile"
     },
@@ -145,7 +141,8 @@
             "high_demand": "High demand",
             "heat_pump": "Heat pump",
             "gas": "Gas",
-            "manual": "Manual"
+            "manual": "Manual",
+            "heat_cool": "Heat\/Cool"
         },
         "configurator": {
             "configure": "Configure",
@@ -311,6 +308,28 @@
                 "add_item": "Add item",
                 "microphone_tip": "Tap the microphone on the top right and say “Add candy to my shopping list”"
             },
+            "developer-tools": {
+                "tabs": {
+                    "services": {
+                        "title": "Services"
+                    },
+                    "states": {
+                        "title": "States"
+                    },
+                    "events": {
+                        "title": "Events"
+                    },
+                    "templates": {
+                        "title": "Template"
+                    },
+                    "mqtt": {
+                        "title": "MQTT"
+                    },
+                    "info": {
+                        "title": "Info"
+                    }
+                }
+            },
             "history": {
                 "showing_entries": "Showing entries for",
                 "period": "Period"
@@ -355,6 +374,21 @@
                                 "introduction": "Control your Home Assistant server… from Home Assistant.",
                                 "restart": "Restart",
                                 "stop": "Stop"
+                            },
+                            "core_config": {
+                                "edit_requires_storage": "Editor disabled because config stored in configuration.yaml.",
+                                "location_name": "Name of your Home Assistant installation",
+                                "latitude": "Latitude",
+                                "longitude": "Longitude",
+                                "elevation": "Elevation",
+                                "elevation_meters": "meters",
+                                "time_zone": "Time Zone",
+                                "unit_system": "Unit System",
+                                "unit_system_imperial": "Imperial",
+                                "unit_system_metric": "Metric",
+                                "imperial_example": "Fahrenheit, pounds",
+                                "metric_example": "Celsius, kilograms",
+                                "save_button": "Save"
                             }
                         }
                     }
@@ -545,7 +579,9 @@
                                 }
                             },
                             "learn_more": "Learn more about actions"
-                        }
+                        },
+                        "load_error_not_editable": "Only automations in automations.yaml are editable.",
+                        "load_error_unknown": "Error loading automation ({err_no})."
                     }
                 },
                 "script": {
@@ -554,7 +590,39 @@
                 },
                 "zwave": {
                     "caption": "Z-Wave",
-                    "description": "Manage your Z-Wave network"
+                    "description": "Manage your Z-Wave network",
+                    "network_management": {
+                        "header": "Z-Wave Network Management",
+                        "introduction": "Run commands that affect the Z-Wave network. You won't get feedback on whether most commands succeeded, but you can check the OZW Log to try to find out."
+                    },
+                    "network_status": {
+                        "network_stopped": "Z-Wave Network Stopped",
+                        "network_starting": "Starting Z-Wave Network...",
+                        "network_starting_note": "This may take a while depending on the size of your network.",
+                        "network_started": "Z-Wave Network Started",
+                        "network_started_note_some_queried": "Awake nodes have been queried. Sleeping nodes will be queried when they wake.",
+                        "network_started_note_all_queried": "All nodes have been queried."
+                    },
+                    "services": {
+                        "start_network": "Start Network",
+                        "stop_network": "Stop Network",
+                        "heal_network": "Heal Network",
+                        "test_network": "Test Network",
+                        "soft_reset": "Soft Reset",
+                        "save_config": "Save Config",
+                        "add_node_secure": "Add Node Secure",
+                        "add_node": "Add Node",
+                        "remove_node": "Remove Node",
+                        "cancel_command": "Cancel Command"
+                    },
+                    "common": {
+                        "value": "Value",
+                        "instance": "Instance",
+                        "index": "Index"
+                    },
+                    "values": {
+                        "header": "Node Values"
+                    }
                 },
                 "users": {
                     "caption": "Users",
@@ -598,11 +666,18 @@
                         "delete_confirm": "Are you sure you want to delete this integration?",
                         "restart_confirm": "Restart Home Assistant to finish removing this integration",
                         "manuf": "by {manufacturer}",
-                        "hub": "Connected via",
+                        "via": "Connected via",
                         "firmware": "Firmware: {version}",
                         "device_unavailable": "device unavailable",
                         "entity_unavailable": "entity unavailable",
-                        "no_area": "No Area"
+                        "no_area": "No Area",
+                        "hub": "Connected via"
+                    },
+                    "config_flow": {
+                        "external_step": {
+                            "description": "This step requires you to visit an external website to be completed.",
+                            "open_site": "Open website"
+                        }
                     }
                 },
                 "zha": {
@@ -720,7 +795,6 @@
                 },
                 "current_user": "You are currently logged in as {fullName}.",
                 "is_owner": "You are an owner.",
-                "logout": "Log out",
                 "change_password": {
                     "header": "Change Password",
                     "current_password": "Current Password",
@@ -741,6 +815,11 @@
                     "step_done": "Setup done for {step}",
                     "close": "Close",
                     "submit": "Submit"
+                },
+                "logout": "Log out",
+                "force_narrow": {
+                    "header": "Always hide the sidebar",
+                    "description": "This will hide the sidebar by default, similar to the mobile experience."
                 }
             },
             "page-authorize": {
@@ -860,6 +939,14 @@
                     "intro": "Devices and services are represented in Home Assistant as integrations. You can set them up now, or do it later from the configuration screen.",
                     "more_integrations": "More",
                     "finish": "Finish"
+                },
+                "core-config": {
+                    "intro": "Hello {name}, welcome to Home Assistant. How would you like to name your home?",
+                    "intro_location": "We would like to know where you live. This information will help with displaying information and setting up sun-based automations. This data is never shared outside of your network.",
+                    "intro_location_detect": "We can help you fill in this information by making a one-time request to an external service.",
+                    "location_name_default": "Home",
+                    "button_detect": "Detect",
+                    "finish": "Next"
                 }
             },
             "lovelace": {
@@ -933,12 +1020,59 @@
                 "warning": {
                     "entity_not_found": "Entity not available: {entity}",
                     "entity_non_numeric": "Entity is non-numeric: {entity}"
+                },
+                "changed_toast": {
+                    "message": "The Lovelace config was updated, would you like to refresh?",
+                    "refresh": "Refresh"
+                },
+                "reload_lovelace": "Reload Lovelace"
+            },
+            "page-demo": {
+                "cards": {
+                    "demo": {
+                        "demo_by": "by {name}",
+                        "next_demo": "Next demo",
+                        "introduction": "Welcome home! You've reached the Home Assistant demo where we showcase the best UIs created by our community.",
+                        "learn_more": "Learn more about Home Assistant"
+                    }
+                },
+                "config": {
+                    "arsaboo": {
+                        "names": {
+                            "upstairs": "Upstairs",
+                            "family_room": "Family Room",
+                            "kitchen": "Kitchen",
+                            "patio": "Patio",
+                            "hallway": "Hallway",
+                            "master_bedroom": "Master Bedroom",
+                            "left": "Left",
+                            "right": "Right",
+                            "mirror": "Mirror"
+                        },
+                        "labels": {
+                            "lights": "Lights",
+                            "information": "Information",
+                            "morning_commute": "Morning Commute",
+                            "commute_home": "Commute to Home",
+                            "entertainment": "Entertainment",
+                            "activity": "Activity",
+                            "hdmi_input": "HDMI Input",
+                            "hdmi_switcher": "HDMI Switcher",
+                            "volume": "Volume",
+                            "total_tv_time": "Total TV Time",
+                            "turn_tv_off": "Turn Television off",
+                            "air": "Air"
+                        },
+                        "unit": {
+                            "watching": "watching",
+                            "minutes_abbr": "min"
+                        }
+                    }
                 }
             }
         },
         "sidebar": {
             "log_out": "Log out",
-            "developer_tools": "Developer tools",
             "external_app_configuration": "App Configuration"
         },
         "common": {
@@ -1042,7 +1176,8 @@
                 "fan_mode": "Fan mode",
                 "swing_mode": "Swing mode",
                 "away_mode": "Away mode",
-                "aux_heat": "Aux heat"
+                "aux_heat": "Aux heat",
+                "preset_mode": "Preset"
             },
             "lock": {
                 "code": "Code",
@@ -1187,6 +1322,24 @@
                 "off": "Off",
                 "on": "On",
                 "auto": "Auto"
+            },
+            "preset_mode": {
+                "none": "None",
+                "eco": "Eco",
+                "away": "Away",
+                "boost": "Boost",
+                "comfort": "Comfort",
+                "home": "Home",
+                "sleep": "Sleep",
+                "activity": "Activity"
+            },
+            "hvac_action": {
+                "off": "Off",
+                "heating": "Heating",
+                "cooling": "Cooling",
+                "drying": "Drying",
+                "idle": "Idle",
+                "fan": "Fan"
             }
         }
     },

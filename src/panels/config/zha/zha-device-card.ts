@@ -1,8 +1,8 @@
 import "../../../components/buttons/ha-call-service-button";
 import "../../../components/ha-service-description";
 import "../../../components/entity/state-badge";
+import "../../../components/ha-card";
 import "@material/mwc-button";
-import "@polymer/paper-card/paper-card";
 import "@polymer/paper-dropdown-menu/paper-dropdown-menu";
 import "@polymer/paper-input/paper-input";
 import "@polymer/paper-item/paper-icon-item";
@@ -36,6 +36,7 @@ import { HomeAssistant } from "../../../types";
 import { ItemSelectedEvent, NodeServiceData } from "./types";
 import { navigate } from "../../../common/navigate";
 import { UnsubscribeFunc } from "home-assistant-js-websocket";
+import { formatAsPaddedHex } from "./functions";
 
 declare global {
   // for fire event
@@ -90,9 +91,12 @@ class ZHADeviceCard extends LitElement {
       this._userGivenName = this.device!.user_given_name;
     }
     if (!this._unsubAreas) {
-      this._unsubAreas = subscribeAreaRegistry(this.hass, (areas) => {
-        this._areas = areas;
-      });
+      this._unsubAreas = subscribeAreaRegistry(
+        this.hass.connection,
+        (areas) => {
+          this._areas = areas;
+        }
+      );
     }
     super.update(changedProperties);
   }
@@ -108,7 +112,7 @@ class ZHADeviceCard extends LitElement {
 
   protected render(): TemplateResult | void {
     return html`
-      <paper-card heading="${this.isJoinPage ? this.device!.name : ""}">
+      <ha-card header="${this.isJoinPage ? this.device!.name : ""}">
         ${
           this.isJoinPage
             ? html`
@@ -129,6 +133,16 @@ class ZHADeviceCard extends LitElement {
           <dl>
             <dt>IEEE:</dt>
             <dd class="zha-info">${this.device!.ieee}</dd>
+            <dt>Nwk:</dt>
+            <dd class="zha-info">${formatAsPaddedHex(this.device!.nwk)}</dd>
+            <dt>LQI:</dt>
+            <dd class="zha-info">${this.device!.lqi || "Unknown"}</dd>
+            <dt>RSSI:</dt>
+            <dd class="zha-info">${this.device!.rssi || "Unknown"}</dd>
+            <dt>Last Seen:</dt>
+            <dd class="zha-info">${this.device!.last_seen || "Unknown"}</dd>
+            <dt>Power Source:</dt>
+            <dd class="zha-info">${this.device!.power_source || "Unknown"}</dd>
             ${
               this.device!.quirk_applied
                 ? html`
@@ -256,7 +270,7 @@ class ZHADeviceCard extends LitElement {
             : ""
         }
         </div>
-      </paper-card>
+      </ha-card>
     `;
   }
 
@@ -326,7 +340,7 @@ class ZHADeviceCard extends LitElement {
           padding: 4px;
           justify-content: left;
         }
-        paper-card {
+        ha-card {
           flex: 1 0 100%;
           padding-bottom: 10px;
           min-width: 425px;
@@ -354,7 +368,7 @@ class ZHADeviceCard extends LitElement {
         dl dt {
           padding-left: 12px;
           float: left;
-          width: 50px;
+          width: 100px;
           text-align: left;
         }
         dt dd {

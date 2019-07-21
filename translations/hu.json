@@ -7,12 +7,8 @@
         "history": "Előzmények",
         "mailbox": "Postafiók",
         "shopping_list": "Bevásárló lista",
-        "dev-services": "Szolgáltatások",
-        "dev-states": "Állapotok",
-        "dev-events": "Események",
-        "dev-templates": "Sablonok",
-        "dev-mqtt": "MQTT",
         "dev-info": "Infó",
+        "developer_tools": "Fejlesztői eszközök",
         "calendar": "Naptár",
         "profile": "Profil"
     },
@@ -311,6 +307,25 @@
                 "add_item": "Tétel hozzáadása",
                 "microphone_tip": "Koppints a jobb felső sarokban található mikrofonra, és mondd ki: \"Add candy to my shopping list\""
             },
+            "developer-tools": {
+                "tabs": {
+                    "services": {
+                        "title": "Szolgáltatások"
+                    },
+                    "states": {
+                        "title": "Állapotok"
+                    },
+                    "events": {
+                        "title": "Események"
+                    },
+                    "templates": {
+                        "title": "Sablonok"
+                    },
+                    "mqtt": {
+                        "title": "MQTT"
+                    }
+                }
+            },
             "history": {
                 "showing_entries": "Bejegyzések megjelenítése",
                 "period": "Időtartam"
@@ -355,6 +370,21 @@
                                 "introduction": "Home Assistant szerver vezérlése... a Home Assistant-ból.",
                                 "restart": "Újraindítás",
                                 "stop": "Leállítás"
+                            },
+                            "core_config": {
+                                "edit_requires_storage": "A szerkesztő le van tiltva, mert a konfiguráció a configuration.yaml fájlban van tárolva.",
+                                "location_name": "A Home Assistant rendszered neve",
+                                "latitude": "Szélesség",
+                                "longitude": "Hosszúság",
+                                "elevation": "Magasság",
+                                "elevation_meters": "méter",
+                                "time_zone": "Időzóna",
+                                "unit_system": "Egységrendszer",
+                                "unit_system_imperial": "Angolszász",
+                                "unit_system_metric": "Metrikus",
+                                "imperial_example": "Fahrenheit, font",
+                                "metric_example": "Celsius, kilogramm",
+                                "save_button": "Mentés"
                             }
                         }
                     }
@@ -545,7 +575,9 @@
                                 }
                             },
                             "learn_more": "Tudj meg többet a műveletekről"
-                        }
+                        },
+                        "load_error_not_editable": "Csak az automations.yaml fájlban lévő automatizálások szerkeszthetőek.",
+                        "load_error_unknown": "Hiba történt az automatizálás betöltésekor ({err_no})."
                     }
                 },
                 "script": {
@@ -598,11 +630,18 @@
                         "delete_confirm": "Biztosan törölni szeretnéd ezt az integrációt?",
                         "restart_confirm": "Indítsd újra a Home Assistant-ot az integráció törlésének befejezéséhez",
                         "manuf": "{manufacturer} által",
-                        "hub": "Kapcsolódva",
+                        "via": "Kapcsolódva",
                         "firmware": "Firmware: {version}",
                         "device_unavailable": "eszköz nem érhető el",
                         "entity_unavailable": "entitás nem érhető el",
-                        "no_area": "Nincs Terület"
+                        "no_area": "Nincs Terület",
+                        "hub": "Kapcsolódva"
+                    },
+                    "config_flow": {
+                        "external_step": {
+                            "description": "Ehhez a lépéshez egy külső weboldal meglátogatása szükséges.",
+                            "open_site": "Weboldal megnyitása"
+                        }
                     }
                 },
                 "zha": {
@@ -720,7 +759,6 @@
                 },
                 "current_user": "Jelenleg {fullName} felhasználóként vagy bejelentkezve.",
                 "is_owner": "Tulajdonos vagy.",
-                "logout": "Kijelentkezés",
                 "change_password": {
                     "header": "Jelszó Módosítása",
                     "current_password": "Jelenlegi Jelszó",
@@ -855,6 +893,19 @@
                         "required_fields": "Töltsd ki az összes szükséges mezőt",
                         "password_not_match": "A jelszavak nem egyeznek"
                     }
+                },
+                "integration": {
+                    "intro": "Az eszközöket és szolgáltatásokat a Home Assistant integrációként kezeli. Beállíthatod őket most, vagy később a konfigurációs képernyőn.",
+                    "more_integrations": "Több",
+                    "finish": "Befejezés"
+                },
+                "core-config": {
+                    "intro": "Hello {name}, üdvözöl a Home Assistant. Hogyan szeretnéd elnevezni az otthonodat?",
+                    "intro_location": "Szeretnénk tudni, hogy hol élsz. Ez segít az információk megjelenítésében és a nap alapú automatizálások beállításában. Ez az adat soha nem lesz megosztva a hálózatodon kívül.",
+                    "intro_location_detect": "Segíthetünk neked kitölteni ezt az információt egy külső szolgáltatás egyszeri lekérdezésével.",
+                    "location_name_default": "Otthon",
+                    "button_detect": "Érzékelés",
+                    "finish": "Tovább"
                 }
             },
             "lovelace": {
@@ -928,12 +979,60 @@
                 "warning": {
                     "entity_not_found": "Entitás nem elérhető: {entity}",
                     "entity_non_numeric": "Entitás nem numerikus: {entity}"
+                },
+                "changed_toast": {
+                    "message": "A Lovelace config módosult, szeretnéd frissíteni?",
+                    "refresh": "Frissítés"
+                },
+                "reload_lovelace": "Lovelace Újratöltése"
+            },
+            "page-demo": {
+                "cards": {
+                    "demo": {
+                        "demo_by": "készítette: {name}",
+                        "next_demo": "Következő demó",
+                        "introduction": "Üdv itthon! Megnyitottad a Home Assistant demót, ahol bemutatjuk a közösségünk által létrehozott legjobb felhasználói felületeket.",
+                        "learn_more": "Tudj meg többet a Home Assistant-ról"
+                    }
+                },
+                "config": {
+                    "arsaboo": {
+                        "names": {
+                            "upstairs": "Emelet",
+                            "family_room": "Nappali",
+                            "kitchen": "Konyha",
+                            "patio": "Terasz",
+                            "hallway": "Előszoba",
+                            "master_bedroom": "Hálószoba",
+                            "left": "Bal",
+                            "right": "Jobb",
+                            "mirror": "Tükör"
+                        },
+                        "labels": {
+                            "lights": "Világítás",
+                            "information": "Információ",
+                            "morning_commute": "Reggeli útidő a munkahelyre",
+                            "commute_home": "Útidő haza",
+                            "entertainment": "Szórakozás",
+                            "activity": "Tevékenység",
+                            "hdmi_input": "HDMI bemenet",
+                            "hdmi_switcher": "HDMI váltó",
+                            "volume": "Hangerő",
+                            "total_tv_time": "Összes TV nézéssel töltött idő",
+                            "turn_tv_off": "Televízió kikapcsolása",
+                            "air": "Levegő"
+                        },
+                        "unit": {
+                            "watching": "megtekintő",
+                            "minutes_abbr": "perc"
+                        }
+                    }
                 }
             }
         },
         "sidebar": {
             "log_out": "Kijelentkezés",
-            "developer_tools": "Fejlesztői eszközök"
+            "external_app_configuration": "App Konfiguráció"
         },
         "common": {
             "loading": "Betöltés",
@@ -1036,7 +1135,8 @@
                 "fan_mode": "Sebesség",
                 "swing_mode": "Forgási mód",
                 "away_mode": "Távoli mód",
-                "aux_heat": "Külső melegítő"
+                "aux_heat": "Külső melegítő",
+                "preset_mode": "Beállítási mód"
             },
             "lock": {
                 "code": "Kód",
@@ -1181,6 +1281,16 @@
                 "off": "Ki",
                 "on": "Be",
                 "auto": "Automatikus"
+            },
+            "preset_mode": {
+                "none": "Nincs",
+                "eco": "Takarékos",
+                "away": "Távol",
+                "boost": "Turbo",
+                "comfort": "Komfort",
+                "home": "Otthon",
+                "sleep": "Alvás",
+                "activity": "Tevékenység"
             }
         }
     },

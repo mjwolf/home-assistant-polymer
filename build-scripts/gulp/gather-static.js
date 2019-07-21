@@ -2,6 +2,7 @@
 
 const gulp = require("gulp");
 const path = require("path");
+const cpx = require("cpx");
 const fs = require("fs-extra");
 const zopfli = require("gulp-zopfli-green");
 const merge = require("merge-stream");
@@ -48,15 +49,26 @@ function copyPolyfills(staticDir) {
 function copyFonts(staticDir) {
   const staticPath = genStaticPath(staticDir);
   // Local fonts
-  fs.copySync(npmPath("@polymer/font-roboto-local/fonts"), staticPath("fonts"));
+  cpx.copySync(
+    npmPath("roboto-fontface/fonts/roboto/*.woff2"),
+    staticPath("fonts/roboto")
+  );
+}
+
+function copyMapPanel(staticDir) {
+  const staticPath = genStaticPath(staticDir);
+  copyFileDir(
+    npmPath("leaflet/dist/leaflet.css"),
+    staticPath("images/leaflet/")
+  );
+  fs.copySync(
+    npmPath("leaflet/dist/images"),
+    staticPath("images/leaflet/images/")
+  );
 }
 
 function compressStatic(staticDir) {
   const staticPath = genStaticPath(staticDir);
-  const fonts = gulp
-    .src(staticPath("fonts/**/*.ttf"))
-    .pipe(zopfli())
-    .pipe(gulp.dest(staticPath("fonts")));
   const polyfills = gulp
     .src(staticPath("polyfills/*.js"))
     .pipe(zopfli())
@@ -66,7 +78,7 @@ function compressStatic(staticDir) {
     .pipe(zopfli())
     .pipe(gulp.dest(staticPath("translations")));
 
-  return merge(fonts, polyfills, translations);
+  return merge(polyfills, translations);
 }
 
 gulp.task("copy-static", (done) => {
@@ -84,14 +96,7 @@ gulp.task("copy-static", (done) => {
     npmPath("react-big-calendar/lib/css/react-big-calendar.css"),
     staticPath("panels/calendar/")
   );
-  copyFileDir(
-    npmPath("leaflet/dist/leaflet.css"),
-    staticPath("images/leaflet/")
-  );
-  fs.copySync(
-    npmPath("leaflet/dist/images"),
-    staticPath("images/leaflet/images/")
-  );
+  copyMapPanel(staticDir);
   done();
 });
 
@@ -104,6 +109,7 @@ gulp.task("copy-static-demo", (done) => {
   fs.copySync(path.resolve(paths.demo_dir, "public"), paths.demo_root);
 
   copyPolyfills(paths.demo_static);
+  copyMapPanel(paths.demo_static);
   copyFonts(paths.demo_static);
   copyTranslations(paths.demo_static);
   done();

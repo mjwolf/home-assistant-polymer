@@ -34,6 +34,7 @@ import { HaConfigFlowParams } from "./show-dialog-config-flow";
 import "./step-flow-pick-handler";
 import "./step-flow-loading";
 import "./step-flow-form";
+import "./step-flow-external";
 import "./step-flow-abort";
 import "./step-flow-create-entry";
 import {
@@ -155,6 +156,13 @@ class ConfigFlowDialog extends LitElement {
                 .hass=${this.hass}
               ></step-flow-form>
             `
+          : this._step.type === "external"
+          ? html`
+              <step-flow-external
+                .step=${this._step}
+                .hass=${this.hass}
+              ></step-flow-external>
+            `
           : this._step.type === "abort"
           ? html`
               <step-flow-abort
@@ -211,15 +219,18 @@ class ConfigFlowDialog extends LitElement {
   }
 
   private async _fetchDevices(configEntryId) {
-    this._unsubDevices = subscribeDeviceRegistry(this.hass, (devices) => {
-      this._devices = devices.filter((device) =>
-        device.config_entries.includes(configEntryId)
-      );
-    });
+    this._unsubDevices = subscribeDeviceRegistry(
+      this.hass.connection,
+      (devices) => {
+        this._devices = devices.filter((device) =>
+          device.config_entries.includes(configEntryId)
+        );
+      }
+    );
   }
 
   private async _fetchAreas() {
-    this._unsubAreas = subscribeAreaRegistry(this.hass, (areas) => {
+    this._unsubAreas = subscribeAreaRegistry(this.hass.connection, (areas) => {
       this._areas = areas;
     });
   }
@@ -251,7 +262,7 @@ class ConfigFlowDialog extends LitElement {
       return;
     }
     const flowFinished = Boolean(
-      this._step && ["success", "abort"].includes(this._step.type)
+      this._step && ["create_entry", "abort"].includes(this._step.type)
     );
 
     // If we created this flow, delete it now.

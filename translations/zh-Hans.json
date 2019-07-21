@@ -7,12 +7,8 @@
         "history": "历史",
         "mailbox": "邮箱",
         "shopping_list": "购物清单",
-        "dev-services": "服务",
-        "dev-states": "状态",
-        "dev-events": "事件",
-        "dev-templates": "模板",
-        "dev-mqtt": "MQTT",
         "dev-info": "信息",
+        "developer_tools": "开发者工具",
         "calendar": "日历",
         "profile": "用户资料"
     },
@@ -132,7 +128,7 @@
         },
         "climate": {
             "off": "关",
-            "on": "开启",
+            "on": "开",
             "heat": "制热",
             "cool": "制冷",
             "idle": "待机",
@@ -163,8 +159,8 @@
             "not_home": "离开"
         },
         "fan": {
-            "off": "关闭",
-            "on": "开启"
+            "off": "关",
+            "on": "开"
         },
         "group": {
             "off": "关闭",
@@ -173,7 +169,7 @@
             "not_home": "离开",
             "open": "开启",
             "opening": "正在打开",
-            "closed": "关闭",
+            "closed": "已关闭",
             "closing": "正在关闭",
             "stopped": "已停止",
             "locked": "已锁定",
@@ -182,8 +178,8 @@
             "problem": "异常"
         },
         "input_boolean": {
-            "off": "关闭",
-            "on": "开启"
+            "off": "关",
+            "on": "开"
         },
         "light": {
             "off": "关",
@@ -194,8 +190,8 @@
             "unlocked": "解锁"
         },
         "media_player": {
-            "off": "关闭",
-            "on": "开启",
+            "off": "关",
+            "on": "开",
             "playing": "正在播放",
             "paused": "已暂停",
             "idle": "空闲",
@@ -206,19 +202,19 @@
             "problem": "异常"
         },
         "remote": {
-            "off": "关闭",
-            "on": "开启"
+            "off": "关",
+            "on": "开"
         },
         "scene": {
             "scening": "场景启用中"
         },
         "script": {
-            "off": "关闭",
-            "on": "开启"
+            "off": "关",
+            "on": "开"
         },
         "sensor": {
-            "off": "关闭",
-            "on": "开启"
+            "off": "关",
+            "on": "开"
         },
         "sun": {
             "above_horizon": "日出",
@@ -311,6 +307,25 @@
                 "add_item": "添加项目",
                 "microphone_tip": "点击右上角麦克风图标并说 “Add candy to my shopping list”"
             },
+            "developer-tools": {
+                "tabs": {
+                    "services": {
+                        "title": "服务"
+                    },
+                    "states": {
+                        "title": "状态"
+                    },
+                    "events": {
+                        "title": "事件"
+                    },
+                    "templates": {
+                        "title": "模板"
+                    },
+                    "mqtt": {
+                        "title": "MQTT"
+                    }
+                }
+            },
             "history": {
                 "showing_entries": "显示自以下日期的图表",
                 "period": "日期范围"
@@ -355,6 +370,21 @@
                                 "introduction": "在这里即可控制 Home Assistant 服务。",
                                 "restart": "重启服务",
                                 "stop": "停止服务"
+                            },
+                            "core_config": {
+                                "edit_requires_storage": "编辑器已禁用，因为配置存储于 configuration.yaml。",
+                                "location_name": "Home Assistant 安装的名称",
+                                "latitude": "纬度",
+                                "longitude": "经度",
+                                "elevation": "海拔",
+                                "elevation_meters": "米",
+                                "time_zone": "时区",
+                                "unit_system": "单位制",
+                                "unit_system_imperial": "英制",
+                                "unit_system_metric": "公制",
+                                "imperial_example": "华氏、磅",
+                                "metric_example": "摄氏、千克",
+                                "save_button": "保存"
                             }
                         }
                     }
@@ -372,7 +402,7 @@
                     "description": "创建和编辑自动化",
                     "picker": {
                         "header": "自动化编辑器",
-                        "introduction": "自动化编辑器方便你创建及编辑自动化。请阅读相关[说明](https:\/\/home-assistant.io\/docs\/automation\/editor\/)以确保正确配置。",
+                        "introduction": "自动化编辑器方便你创建及编辑自动化。请按照下面的链接阅读说明，以确保您已正确配置Home Assistant。",
                         "pick_automation": "选择要编辑的自动化",
                         "no_automations": "未找到可编辑的自动化",
                         "add_automation": "添加自动化",
@@ -468,7 +498,7 @@
                         },
                         "conditions": {
                             "header": "环境条件",
-                            "introduction": "环境条件是自动化流程中的可选条件，它可用于避免触发条件满足时动作的执行。环境条件看似像触发条件实则大有不同。触发条件监测系统中事件的发生，也就是瞬时动作；而环境条件监测的是系统的状态。例如，“灯被打开”这个事件属于触发条件，“灯是开着的”这个状态就属于环境条件。\n\n[了解更多内容](https:\/\/home-assistant.io\/docs\/scripts\/conditions\/)",
+                            "introduction": "环境条件是自动化流程中的可选部分，它可用于触发条件触发时拦截不符合条件的动作。环境条件看似像触发条件实则大有不同。触发条件监测系统中事件的发生，也就是瞬时动作；而环境条件监测的是系统当前的状态。触发条件可以观察到开关打开的动作。条件只能查看当前开关是开还是关。",
                             "add": "添加环境条件",
                             "duplicate": "复制",
                             "delete": "删除",
@@ -545,7 +575,9 @@
                                 }
                             },
                             "learn_more": "详细了解动作"
-                        }
+                        },
+                        "load_error_not_editable": "只能编辑 automations.yaml 中的自动化。",
+                        "load_error_unknown": "加载自动化错误 ({err_no})。"
                     }
                 },
                 "script": {
@@ -581,7 +613,8 @@
                 "cloud": {
                     "caption": "Home Assistant Cloud",
                     "description_login": "登录为 {email}",
-                    "description_not_login": "未登录"
+                    "description_not_login": "未登录",
+                    "description_features": "整合 Alexa 及 Google 助理，远程控制智能家居。"
                 },
                 "integrations": {
                     "caption": "集成",
@@ -597,11 +630,18 @@
                         "delete_confirm": "您确定要删除此集成吗？",
                         "restart_confirm": "重启 Home Assistant 以完成此集成的删除",
                         "manuf": "by {manufacturer}",
-                        "hub": "链接于",
+                        "via": "链接于",
                         "firmware": "固件：{version}",
                         "device_unavailable": "设备不可用",
                         "entity_unavailable": "实体不可用",
-                        "no_area": "没有区域"
+                        "no_area": "没有区域",
+                        "hub": "连接于"
+                    },
+                    "config_flow": {
+                        "external_step": {
+                            "description": "此步骤需要访问外部网站才能完成。",
+                            "open_site": "打开网站"
+                        }
                     }
                 },
                 "zha": {
@@ -613,7 +653,9 @@
                         "remove": "从 ZigBee 网络中删除设备。"
                     },
                     "device_card": {
-                        "device_name_placeholder": "用户指定的名称"
+                        "device_name_placeholder": "用户指定的名称",
+                        "area_picker_label": "区域",
+                        "update_name_button": "更新名称"
                     },
                     "add_device_page": {
                         "header": "Zigbee家庭自动化 - 添加设备",
@@ -717,7 +759,6 @@
                 },
                 "current_user": "您目前以 {fullName} 的身份登录。",
                 "is_owner": "您拥有所有者权限。",
-                "logout": "退出",
                 "change_password": {
                     "header": "更改密码",
                     "current_password": "当前密码",
@@ -852,6 +893,19 @@
                         "required_fields": "请填写所有必填字段",
                         "password_not_match": "密码不匹配"
                     }
+                },
+                "integration": {
+                    "intro": "设备和服务在 Home Assistant 中表示为集成。您可以立即设置它们，也可以稍后在配置屏幕进行设置。",
+                    "more_integrations": "更多",
+                    "finish": "完成"
+                },
+                "core-config": {
+                    "intro": "{name}，您好！欢迎来到 Home Assistant。您想怎样命名您的家呢？",
+                    "intro_location": "我们想知道您住在哪里。这将用于显示资讯以及设置基于太阳的自动化。此数据永远不会在您的网络以外共享。",
+                    "intro_location_detect": "我们可以通过向外部服务发出一个一次性请求来帮助您填写此信息。",
+                    "location_name_default": "家",
+                    "button_detect": "自动检测",
+                    "finish": "下一步"
                 }
             },
             "lovelace": {
@@ -865,6 +919,14 @@
                         "title": "欢迎回家",
                         "no_devices": "此页面是用来控制设备的，不过您好像还没有配置好任何设备。请前往集成页面以开始。",
                         "go_to_integrations_page": "前往集成页面。"
+                    },
+                    "picture-elements": {
+                        "hold": "按住：",
+                        "tap": "点击：",
+                        "navigate_to": "导航到{location}",
+                        "toggle": "切换{name}",
+                        "call_service": "调用服务{name}",
+                        "more_info": "显示更多信息： {name}"
                     }
                 },
                 "editor": {
@@ -917,12 +979,60 @@
                 "warning": {
                     "entity_not_found": "实体 {entity} 不可用",
                     "entity_non_numeric": "实体 {entity} 非数值"
+                },
+                "changed_toast": {
+                    "message": "Lovelace 配置已更新，您想刷新吗？",
+                    "refresh": "刷新"
+                },
+                "reload_lovelace": "重新加载 Lovelace"
+            },
+            "page-demo": {
+                "cards": {
+                    "demo": {
+                        "demo_by": "来自 {name}",
+                        "next_demo": "下一个演示",
+                        "introduction": "欢迎回家！您现在位于 Home Assistant 演示，这里展示了我们的社区创作的最佳 UI。",
+                        "learn_more": "详细了解 Home Assistant"
+                    }
+                },
+                "config": {
+                    "arsaboo": {
+                        "names": {
+                            "upstairs": "二楼",
+                            "family_room": "客厅",
+                            "kitchen": "厨房",
+                            "patio": "露台",
+                            "hallway": "门厅",
+                            "master_bedroom": "主卧",
+                            "left": "左",
+                            "right": "右",
+                            "mirror": "镜子"
+                        },
+                        "labels": {
+                            "lights": "灯",
+                            "information": "信息",
+                            "morning_commute": "上班",
+                            "commute_home": "下班",
+                            "entertainment": "娱乐",
+                            "activity": "活动",
+                            "hdmi_input": "HDMI输入",
+                            "hdmi_switcher": "HDMI切换",
+                            "volume": "音量",
+                            "total_tv_time": "观看总时长",
+                            "turn_tv_off": "关闭电视",
+                            "air": "换气"
+                        },
+                        "unit": {
+                            "watching": "观看",
+                            "minutes_abbr": "分"
+                        }
+                    }
                 }
             }
         },
         "sidebar": {
             "log_out": "退出",
-            "developer_tools": "开发者工具"
+            "external_app_configuration": "应用配置"
         },
         "common": {
             "loading": "加载中",
@@ -1025,7 +1135,8 @@
                 "fan_mode": "风速",
                 "swing_mode": "扫风模式",
                 "away_mode": "离开模式",
-                "aux_heat": "辅热"
+                "aux_heat": "辅热",
+                "preset_mode": "预设"
             },
             "lock": {
                 "code": "密码",
@@ -1170,6 +1281,16 @@
                 "off": "关",
                 "on": "开",
                 "auto": "自动"
+            },
+            "preset_mode": {
+                "none": "无",
+                "eco": "节能",
+                "away": "离家",
+                "boost": "强力",
+                "comfort": "舒适",
+                "home": "在家",
+                "sleep": "睡眠",
+                "activity": "活动"
             }
         }
     },

@@ -5,6 +5,7 @@ import {
   css,
   PropertyValues,
   property,
+  eventOptions,
 } from "lit-element";
 import "@polymer/app-layout/app-toolbar/app-toolbar";
 import "@polymer/paper-icon-button/paper-icon-button";
@@ -14,7 +15,7 @@ import "@polymer/paper-listbox/paper-listbox";
 import "./ha-icon";
 
 import "../components/user/ha-user-badge";
-import isComponentLoaded from "../common/config/is_component_loaded";
+import "../components/ha-menu-button";
 import { HomeAssistant, PanelInfo } from "../types";
 import { fireEvent } from "../common/dom/fire_event";
 import { DEFAULT_PANEL } from "../common/const";
@@ -22,58 +23,92 @@ import {
   getExternalConfig,
   ExternalConfig,
 } from "../external_app/external_config";
+import {
+  PersistentNotification,
+  subscribeNotifications,
+} from "../data/persistent_notification";
+import computeDomain from "../common/entity/compute_domain";
+import { classMap } from "lit-html/directives/class-map";
+// tslint:disable-next-line: no-duplicate-imports
+import { PaperIconItemElement } from "@polymer/paper-item/paper-icon-item";
 
-const computeUrl = (urlPath) => `/${urlPath}`;
+const SHOW_AFTER_SPACER = ["config", "developer-tools"];
 
-const computePanels = (hass: HomeAssistant) => {
+const SUPPORT_SCROLL_IF_NEEDED = "scrollIntoViewIfNeeded" in document.body;
+
+const SORT_VALUE = {
+  map: 1,
+  logbook: 2,
+  history: 3,
+  "developer-tools": 9,
+  configuration: 10,
+};
+
+const panelSorter = (a, b) => {
+  const aBuiltIn = a.component_name in SORT_VALUE;
+  const bBuiltIn = b.component_name in SORT_VALUE;
+
+  if (aBuiltIn && bBuiltIn) {
+    return SORT_VALUE[a.component_name] - SORT_VALUE[b.component_name];
+  }
+  if (aBuiltIn) {
+    return -1;
+  }
+  if (bBuiltIn) {
+    return 1;
+  }
+  // both not built in, sort by title
+  if (a.title! < b.title!) {
+    return -1;
+  }
+  if (a.title! > b.title!) {
+    return 1;
+  }
+  return 0;
+};
+
+const computePanels = (hass: HomeAssistant): [PanelInfo[], PanelInfo[]] => {
   const panels = hass.panels;
   if (!panels) {
-    return [];
+    return [[], []];
   }
 
-  const sortValue = {
-    map: 1,
-    logbook: 2,
-    history: 3,
-  };
-  const result: PanelInfo[] = Object.values(panels).filter(
-    (panel) => panel.title
-  );
+  const beforeSpacer: PanelInfo[] = [];
+  const afterSpacer: PanelInfo[] = [];
 
-  result.sort((a, b) => {
-    const aBuiltIn = a.component_name in sortValue;
-    const bBuiltIn = b.component_name in sortValue;
-
-    if (aBuiltIn && bBuiltIn) {
-      return sortValue[a.component_name] - sortValue[b.component_name];
+  Object.values(panels).forEach((panel) => {
+    if (!panel.title) {
+      return;
     }
-    if (aBuiltIn) {
-      return -1;
-    }
-    if (bBuiltIn) {
-      return 1;
-    }
-    // both not built in, sort by title
-    if (a.title! < b.title!) {
-      return -1;
-    }
-    if (a.title! > b.title!) {
-      return 1;
-    }
-    return 0;
+    (SHOW_AFTER_SPACER.includes(panel.component_name)
+      ? afterSpacer
+      : beforeSpacer
+    ).push(panel);
   });
 
-  return result;
+  beforeSpacer.sort(panelSorter);
+  afterSpacer.sort(panelSorter);
+
+  return [beforeSpacer, afterSpacer];
 };
 
 /*
  * @appliesMixin LocalizeMixin
  */
 class HaSidebar extends LitElement {
-  @property() public hass?: HomeAssistant;
+  @property() public hass!: HomeAssistant;
+  @property() public narrow!: boolean;
+
+  @property({ type: Boolean }) public alwaysExpand = false;
+  @property({ type: Boolean, reflect: true }) public expanded = false;
   @property() public _defaultPage?: string =
     localStorage.defaultPage || DEFAULT_PANEL;
   @property() private _externalConfig?: ExternalConfig;
+  @property() private _notifications?: PersistentNotification[];
+
+  private _mouseLeaveTimeout?: number;
+  private _tooltipHideTimeout?: number;
+  private _recentKeydownActiveUntil = 0;
 
   protected render() {
     const hass = this.hass;
@@ -82,144 +117,150 @@ class HaSidebar extends LitElement {
       return html``;
     }
 
+    const [beforeSpacer, afterSpacer] = computePanels(hass);
+
+    let notificationCount = this._notifications
+      ? this._notifications.length
+      : 0;
+    for (const entityId in hass.states) {
+      if (computeDomain(entityId) === "configurator") {
+        notificationCount++;
+      }
+    }
+
     return html`
-      <app-toolbar>
-        <div main-title>Home Assistant</div>
-        ${hass.user
+      <div class="menu">
+        ${!this.narrow
           ? html`
-              <a href="/profile">
-                <ha-user-badge .user=${hass.user}></ha-user-badge>
-              </a>
+              <paper-icon-button
+                aria-label="Sidebar Toggle"
+                .icon=${hass.dockedSidebar === "docked"
+                  ? "hass:menu-open"
+                  : "hass:menu"}
+                @click=${this._toggleSidebar}
+              ></paper-icon-button>
             `
           : ""}
-      </app-toolbar>
+        <span class="title">Home Assistant</span>
+      </div>
+      <paper-listbox
+        attr-for-selected="data-panel"
+        .selected=${hass.panelUrl}
+        @focusin=${this._listboxFocusIn}
+        @focusout=${this._listboxFocusOut}
+        @scroll=${this._listboxScroll}
+        @keydown=${this._listboxKeydown}
+      >
+        ${this._renderPanel(
+          this._defaultPage,
+          "hass:apps",
+          hass.localize("panel.states")
+        )}
+        ${beforeSpacer.map((panel) =>
+          this._renderPanel(
+            panel.url_path,
+            panel.icon,
+            hass.localize(`panel.${panel.title}`) || panel.title
+          )
+        )}
+        <div class="spacer" disabled></div>
 
-      <paper-listbox attr-for-selected="data-panel" .selected=${hass.panelUrl}>
-        <a
-          href="${computeUrl(this._defaultPage)}"
-          data-panel=${this._defaultPage}
-          tabindex="-1"
-        >
-          <paper-icon-item>
-            <ha-icon slot="item-icon" icon="hass:apps"></ha-icon>
-            <span class="item-text">${hass.localize("panel.states")}</span>
-          </paper-icon-item>
-        </a>
-
-        ${computePanels(hass).map(
-          (panel) => html`
-            <a
-              href="${computeUrl(panel.url_path)}"
-              data-panel="${panel.url_path}"
-              tabindex="-1"
-            >
-              <paper-icon-item>
-                <ha-icon slot="item-icon" .icon="${panel.icon}"></ha-icon>
-                <span class="item-text"
-                  >${hass.localize(`panel.${panel.title}`) || panel.title}</span
-                >
-              </paper-icon-item>
-            </a>
-          `
+        ${afterSpacer.map((panel) =>
+          this._renderPanel(
+            panel.url_path,
+            panel.icon,
+            hass.localize(`panel.${panel.title}`) || panel.title
+          )
         )}
         ${this._externalConfig && this._externalConfig.hasSettingsScreen
           ? html`
               <a
+                aria-role="option"
+                aria-label="App Configuration"
                 href="#external-app-configuration"
                 tabindex="-1"
                 @click=${this._handleExternalAppConfiguration}
               >
-                <paper-icon-item>
+                <paper-icon-item
+                  @mouseenter=${this._itemMouseEnter}
+                  @mouseleave=${this._itemMouseLeave}
+                >
                   <ha-icon
                     slot="item-icon"
                     icon="hass:cellphone-settings-variant"
                   ></ha-icon>
-                  <span class="item-text"
-                    >${hass.localize(
-                      "ui.sidebar.external_app_configuration"
-                    )}</span
-                  >
+                  <span class="item-text">
+                    ${hass.localize("ui.sidebar.external_app_configuration")}
+                  </span>
                 </paper-icon-item>
               </a>
             `
           : ""}
-        ${!hass.user
-          ? html`
-              <paper-icon-item @click=${this._handleLogOut} class="logout">
-                <ha-icon slot="item-icon" icon="hass:exit-to-app"></ha-icon>
-                <span class="item-text"
-                  >${hass.localize("ui.sidebar.log_out")}</span
-                >
-              </paper-icon-item>
-            `
-          : html``}
       </paper-listbox>
 
-      ${hass.user && hass.user.is_admin
-        ? html`
-            <div>
-              <div class="divider"></div>
+      <div class="divider"></div>
 
-              <div class="subheader">
-                ${hass.localize("ui.sidebar.developer_tools")}
-              </div>
+      <paper-icon-item
+        class="notifications"
+        aria-role="option"
+        @click=${this._handleShowNotificationDrawer}
+        @mouseenter=${this._itemMouseEnter}
+        @mouseleave=${this._itemMouseLeave}
+      >
+        <ha-icon slot="item-icon" icon="hass:bell"></ha-icon>
+        ${!this.expanded && notificationCount > 0
+          ? html`
+              <span class="notification-badge" slot="item-icon">
+                ${notificationCount}
+              </span>
+            `
+          : ""}
+        <span class="item-text">
+          ${hass.localize("ui.notification_drawer.title")}
+        </span>
+        ${this.expanded && notificationCount > 0
+          ? html`
+              <span class="notification-badge">${notificationCount}</span>
+            `
+          : ""}
+      </paper-icon-item>
 
-              <div class="dev-tools">
-                <a href="/dev-service" tabindex="-1">
-                  <paper-icon-button
-                    icon="hass:remote"
-                    alt="${hass.localize("panel.dev-services")}"
-                    title="${hass.localize("panel.dev-services")}"
-                  ></paper-icon-button>
-                </a>
-                <a href="/dev-state" tabindex="-1">
-                  <paper-icon-button
-                    icon="hass:code-tags"
-                    alt="${hass.localize("panel.dev-states")}"
-                    title="${hass.localize("panel.dev-states")}"
-                  ></paper-icon-button>
-                </a>
-                <a href="/dev-event" tabindex="-1">
-                  <paper-icon-button
-                    icon="hass:radio-tower"
-                    alt="${hass.localize("panel.dev-events")}"
-                    title="${hass.localize("panel.dev-events")}"
-                  ></paper-icon-button>
-                </a>
-                <a href="/dev-template" tabindex="-1">
-                  <paper-icon-button
-                    icon="hass:file-xml"
-                    alt="${hass.localize("panel.dev-templates")}"
-                    title="${hass.localize("panel.dev-templates")}"
-                  ></paper-icon-button>
-                </a>
-                ${isComponentLoaded(hass, "mqtt")
-                  ? html`
-                      <a href="/dev-mqtt" tabindex="-1">
-                        <paper-icon-button
-                          icon="hass:altimeter"
-                          alt="${hass.localize("panel.dev-mqtt")}"
-                          title="${hass.localize("panel.dev-mqtt")}"
-                        ></paper-icon-button>
-                      </a>
-                    `
-                  : html``}
-                <a href="/dev-info" tabindex="-1">
-                  <paper-icon-button
-                    icon="hass:information-outline"
-                    alt="${hass.localize("panel.dev-info")}"
-                    title="${hass.localize("panel.dev-info")}"
-                  ></paper-icon-button>
-                </a>
-              </div>
-            </div>
-          `
-        : ""}
+      <a
+        class=${classMap({
+          profile: true,
+          // Mimick behavior that paper-listbox provides
+          "iron-selected": hass.panelUrl === "profile",
+        })}
+        href="/profile"
+        data-panel="panel"
+        tabindex="-1"
+        aria-role="option"
+        aria-label=${hass.localize("panel.profile")}
+      >
+        <paper-icon-item
+          @mouseenter=${this._itemMouseEnter}
+          @mouseleave=${this._itemMouseLeave}
+        >
+          <ha-user-badge slot="item-icon" .user=${hass.user}></ha-user-badge>
+
+          <span class="item-text">
+            ${hass.user ? hass.user.name : ""}
+          </span>
+        </paper-icon-item>
+      </a>
+      <div disabled class="bottom-spacer"></div>
+      <div class="tooltip"></div>
     `;
   }
 
   protected shouldUpdate(changedProps: PropertyValues): boolean {
-    if (changedProps.has("_externalConfig")) {
+    if (
+      changedProps.has("expanded") ||
+      changedProps.has("narrow") ||
+      changedProps.has("alwaysExpand") ||
+      changedProps.has("_externalConfig") ||
+      changedProps.has("_notifications")
+    ) {
       return true;
     }
     if (!this.hass || !changedProps.has("hass")) {
@@ -233,30 +274,160 @@ class HaSidebar extends LitElement {
     return (
       hass.panels !== oldHass.panels ||
       hass.panelUrl !== oldHass.panelUrl ||
-      hass.config.components !== oldHass.config.components ||
       hass.user !== oldHass.user ||
-      hass.localize !== oldHass.localize
+      hass.localize !== oldHass.localize ||
+      hass.states !== oldHass.states
     );
   }
 
   protected firstUpdated(changedProps: PropertyValues) {
     super.firstUpdated(changedProps);
+
     if (this.hass && this.hass.auth.external) {
       getExternalConfig(this.hass.auth.external).then((conf) => {
         this._externalConfig = conf;
       });
     }
+    subscribeNotifications(this.hass.connection, (notifications) => {
+      this._notifications = notifications;
+    });
   }
 
-  private _handleLogOut() {
-    fireEvent(this, "hass-logout");
+  protected updated(changedProps) {
+    super.updated(changedProps);
+    if (changedProps.has("alwaysExpand")) {
+      this.expanded = this.alwaysExpand;
+    }
+    if (!SUPPORT_SCROLL_IF_NEEDED || !changedProps.has("hass")) {
+      return;
+    }
+    const oldHass = changedProps.get("hass") as HomeAssistant | undefined;
+    if (!oldHass || oldHass.panelUrl !== this.hass.panelUrl) {
+      const selectedEl = this.shadowRoot!.querySelector(".iron-selected");
+      if (selectedEl) {
+        // @ts-ignore
+        selectedEl.scrollIntoViewIfNeeded();
+      }
+    }
+  }
+
+  private get _tooltip() {
+    return this.shadowRoot!.querySelector(".tooltip")! as HTMLDivElement;
+  }
+
+  private _itemMouseEnter(ev: MouseEvent) {
+    // On keypresses on the listbox, we're going to ignore mouse enter events
+    // for 100ms so that we ignore it when pressing down arrow scrolls the
+    // sidebar causing the mouse to hover a new icon
+    if (
+      this.expanded ||
+      new Date().getTime() < this._recentKeydownActiveUntil
+    ) {
+      return;
+    }
+    if (this._mouseLeaveTimeout) {
+      clearTimeout(this._mouseLeaveTimeout);
+      this._mouseLeaveTimeout = undefined;
+    }
+    this._showTooltip(ev.currentTarget as PaperIconItemElement);
+  }
+
+  private _itemMouseLeave() {
+    if (this._mouseLeaveTimeout) {
+      clearTimeout(this._mouseLeaveTimeout);
+    }
+    this._mouseLeaveTimeout = window.setTimeout(() => {
+      this._hideTooltip();
+    }, 500);
+  }
+
+  private _listboxFocusIn(ev) {
+    if (this.expanded || ev.target.nodeName !== "A") {
+      return;
+    }
+    this._showTooltip(ev.target.querySelector("paper-icon-item"));
+  }
+
+  private _listboxFocusOut() {
+    this._hideTooltip();
+  }
+
+  @eventOptions({
+    passive: true,
+  })
+  private _listboxScroll() {
+    // On keypresses on the listbox, we're going to ignore scroll events
+    // for 100ms so that if pressing down arrow scrolls the sidebar, the tooltip
+    // will not be hidden.
+    if (new Date().getTime() < this._recentKeydownActiveUntil) {
+      return;
+    }
+    this._hideTooltip();
+  }
+
+  private _listboxKeydown() {
+    this._recentKeydownActiveUntil = new Date().getTime() + 100;
+  }
+
+  private _showTooltip(item: PaperIconItemElement) {
+    if (this._tooltipHideTimeout) {
+      clearTimeout(this._tooltipHideTimeout);
+      this._tooltipHideTimeout = undefined;
+    }
+    const tooltip = this._tooltip;
+    const listbox = this.shadowRoot!.querySelector("paper-listbox")!;
+    let top = item.offsetTop + 7;
+    if (listbox.contains(item)) {
+      top -= listbox.scrollTop;
+    }
+    tooltip.innerHTML = item.querySelector(".item-text")!.innerHTML;
+    tooltip.style.display = "block";
+    tooltip.style.top = `${top}px`;
+    tooltip.style.left = `${item.offsetLeft + item.clientWidth + 12}px`;
+  }
+
+  private _hideTooltip() {
+    // Delay it a little in case other events are pending processing.
+    if (!this._tooltipHideTimeout) {
+      this._tooltipHideTimeout = window.setTimeout(() => {
+        this._tooltipHideTimeout = undefined;
+        this._tooltip.style.display = "none";
+      }, 10);
+    }
+  }
+
+  private _handleShowNotificationDrawer() {
+    fireEvent(this, "hass-show-notifications");
   }
 
   private _handleExternalAppConfiguration(ev: Event) {
     ev.preventDefault();
-    this.hass!.auth.external!.fireMessage({
+    this.hass.auth.external!.fireMessage({
       type: "config_screen/show",
     });
+  }
+
+  private _toggleSidebar() {
+    fireEvent(this, "hass-toggle-menu");
+  }
+
+  private _renderPanel(urlPath, icon, title) {
+    return html`
+      <a
+        aria-role="option"
+        href="${`/${urlPath}`}"
+        data-panel="${urlPath}"
+        tabindex="-1"
+      >
+        <paper-icon-item
+          @mouseenter=${this._itemMouseEnter}
+          @mouseleave=${this._itemMouseLeave}
+        >
+          <ha-icon slot="item-icon" .icon="${icon}"></ha-icon>
+          <span class="item-text">${title}</span>
+        </paper-icon-item>
+      </a>
+    `;
   }
 
   static get styles(): CSSResult {
@@ -264,33 +435,74 @@ class HaSidebar extends LitElement {
       :host {
         height: 100%;
         display: block;
-        overflow: auto;
+        overflow: hidden;
         -ms-user-select: none;
         -webkit-user-select: none;
         -moz-user-select: none;
         border-right: 1px solid var(--divider-color);
-        background-color: var(
-          --sidebar-background-color,
-          var(--primary-background-color)
-        );
+        background-color: var(--sidebar-background-color);
+        width: 64px;
+      }
+      :host([expanded]) {
+        width: 256px;
       }
 
-      app-toolbar {
+      .menu {
+        box-sizing: border-box;
+        height: 65px;
+        display: flex;
+        padding: 0 12px;
+        border-bottom: 1px solid transparent;
+        white-space: nowrap;
         font-weight: 400;
         color: var(--primary-text-color);
         border-bottom: 1px solid var(--divider-color);
         background-color: var(--primary-background-color);
+        font-size: 20px;
+        align-items: center;
+      }
+      :host([expanded]) .menu {
+        width: 256px;
       }
 
-      app-toolbar a {
-        color: var(--primary-text-color);
+      .menu paper-icon-button {
+        color: var(--sidebar-icon-color);
+      }
+      :host([expanded]) .menu paper-icon-button {
+        margin-right: 23px;
+      }
+
+      .title {
+        display: none;
+      }
+      :host([expanded]) .title {
+        display: initial;
+      }
+
+      paper-listbox::-webkit-scrollbar {
+        width: 0.4rem;
+        height: 0.4rem;
+      }
+
+      paper-listbox::-webkit-scrollbar-thumb {
+        -webkit-border-radius: 4px;
+        border-radius: 4px;
+        background: var(--scrollbar-thumb-color);
       }
 
       paper-listbox {
-        padding: 0;
+        padding: 4px 0;
+        display: flex;
+        flex-direction: column;
+        box-sizing: border-box;
+        height: calc(100% - 196px);
+        overflow-y: auto;
+        overflow-x: hidden;
+        scrollbar-color: var(--scrollbar-thumb-color) transparent;
+        scrollbar-width: thin;
       }
 
-      paper-listbox > a {
+      a {
         color: var(--sidebar-text-color);
         font-weight: 500;
         font-size: 14px;
@@ -298,10 +510,15 @@ class HaSidebar extends LitElement {
       }
 
       paper-icon-item {
-        margin: 8px;
-        padding-left: 9px;
+        box-sizing: border-box;
+        margin: 4px 8px;
+        padding-left: 12px;
         border-radius: 4px;
         --paper-item-min-height: 40px;
+        width: 48px;
+      }
+      :host([expanded]) paper-icon-item {
+        width: 240px;
       }
 
       ha-icon[slot="item-icon"] {
@@ -341,14 +558,60 @@ class HaSidebar extends LitElement {
         color: var(--sidebar-selected-text-color);
       }
 
-      paper-icon-item.logout {
-        margin-top: 16px;
+      paper-icon-item .item-text {
+        display: none;
+      }
+      :host([expanded]) paper-icon-item .item-text {
+        display: block;
       }
 
       .divider {
+        bottom: 112px;
+        padding: 10px 0;
+      }
+      .divider::before {
+        content: " ";
+        display: block;
         height: 1px;
         background-color: var(--divider-color);
-        margin: 4px 0;
+      }
+
+      .notifications {
+        cursor: pointer;
+      }
+      .notifications .item-text {
+        flex: 1;
+      }
+      .profile {
+      }
+      .profile paper-icon-item {
+        padding-left: 4px;
+      }
+      .profile .item-text {
+        margin-left: 8px;
+      }
+
+      .notification-badge {
+        min-width: 20px;
+        box-sizing: border-box;
+        border-radius: 50%;
+        font-weight: 400;
+        background-color: var(--primary-color);
+        line-height: 20px;
+        text-align: center;
+        padding: 0px 6px;
+        color: var(--text-primary-color);
+      }
+      ha-icon + .notification-badge {
+        position: absolute;
+        bottom: 14px;
+        left: 26px;
+        font-size: 0.65em;
+      }
+
+      .spacer {
+        flex: 1;
+        pointer-events: none;
       }
 
       .subheader {
@@ -356,6 +619,7 @@ class HaSidebar extends LitElement {
         font-weight: 500;
         font-size: 14px;
         padding: 16px;
+        white-space: nowrap;
       }
 
       .dev-tools {
@@ -363,10 +627,24 @@ class HaSidebar extends LitElement {
         flex-direction: row;
         justify-content: space-between;
         padding: 0 8px;
+        width: 256px;
+        box-sizing: border-box;
       }
 
       .dev-tools a {
         color: var(--sidebar-icon-color);
+      }
+
+      .tooltip {
+        display: none;
+        position: absolute;
+        opacity: 0.9;
+        border-radius: 2px;
+        white-space: nowrap;
+        color: var(--sidebar-background-color);
+        background-color: var(--sidebar-text-color);
+        padding: 4px;
+        font-weight: 500;
       }
     `;
   }

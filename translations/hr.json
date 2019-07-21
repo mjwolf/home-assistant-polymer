@@ -7,12 +7,8 @@
         "history": "Povijest",
         "mailbox": "Pošta",
         "shopping_list": "Popis za kupovinu",
-        "dev-services": "Usluge",
-        "dev-states": "Status",
-        "dev-events": "Događaji",
-        "dev-templates": "Predlošci",
-        "dev-mqtt": "MQTT",
         "dev-info": "Informacije",
+        "developer_tools": "Razvojni alati",
         "calendar": "Kalendar",
         "profile": "Profil"
     },
@@ -289,6 +285,25 @@
                 "add_item": "Dodaj stavku",
                 "microphone_tip": "Dodirnite mikrofon u gornjem desnom kutu i recite “Add candy to my shopping list”"
             },
+            "developer-tools": {
+                "tabs": {
+                    "services": {
+                        "title": "Usluge"
+                    },
+                    "states": {
+                        "title": "Status"
+                    },
+                    "events": {
+                        "title": "Događaji"
+                    },
+                    "templates": {
+                        "title": "Predlošci"
+                    },
+                    "mqtt": {
+                        "title": "MQTT"
+                    }
+                }
+            },
             "history": {
                 "showing_entries": "Prikazivanje stavki za",
                 "period": "Razdoblje"
@@ -533,7 +548,7 @@
                         "delete_confirm": "Jeste li sigurni da želite izbrisati tu integraciju?",
                         "restart_confirm": "Ponovo pokrenite Home Assistant da biste dovršili uklanjanje ove integracije",
                         "manuf": "od {manufacturer}",
-                        "hub": "Povezan putem",
+                        "via": "Povezan putem",
                         "firmware": "Firmware: {version}",
                         "device_unavailable": "uređaj nije dostupan",
                         "entity_unavailable": "entitet nije dostupan"
@@ -588,7 +603,6 @@
                 },
                 "current_user": "Trenutačno ste prijavljeni kao {fullName} .",
                 "is_owner": "Vi ste vlasnik.",
-                "logout": "Odjava",
                 "change_password": {
                     "header": "Promijeni lozinku",
                     "current_password": "Trenutna lozinka",
@@ -750,8 +764,7 @@
             }
         },
         "sidebar": {
-            "log_out": "Odjava",
-            "developer_tools": "Razvojni alati"
+            "log_out": "Odjava"
         },
         "common": {
             "loading": "Učitavam",

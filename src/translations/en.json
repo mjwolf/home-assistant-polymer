@@ -52,12 +52,7 @@
     "history": "History",
     "mailbox": "Mailbox",
     "shopping_list": "Shopping list",
-    "dev-services": "Services",
-    "dev-states": "States",
-    "dev-events": "Events",
-    "dev-templates": "Templates",
-    "dev-mqtt": "MQTT",
-    "dev-info": "Info",
+    "developer_tools": "Developer Tools",
     "profile": "Profile"
   },
   "state": {
@@ -176,20 +171,12 @@
     },
     "climate": {
       "off": "[%key:state::default::off%]",
-      "on": "[%key:state::default::on%]",
       "heat": "Heat",
       "cool": "Cool",
-      "idle": "Idle",
+      "heat_cool": "Heat/Cool",
       "auto": "Auto",
       "dry": "Dry",
-      "fan_only": "Fan only",
-      "eco": "Eco",
-      "electric": "Electric",
-      "performance": "Performance",
-      "high_demand": "High demand",
-      "heat_pump": "Heat pump",
-      "gas": "Gas",
-      "manual": "Manual"
+      "fan_only": "Fan only"
     },
     "configurator": {
       "configure": "Configure",
@@ -326,6 +313,24 @@
         "off": "[%key:state::default::off%]",
         "on": "[%key:state::default::on%]",
         "auto": "[%key:state::climate::auto%]"
+      },
+      "preset_mode": {
+        "none": "None",
+        "eco": "Eco",
+        "away": "Away",
+        "boost": "Boost",
+        "comfort": "Comfort",
+        "home": "Home",
+        "sleep": "Sleep",
+        "activity": "Activity"
+      },
+      "hvac_action": {
+        "off": "Off",
+        "heating": "Heating",
+        "cooling": "Cooling",
+        "drying": "Drying",
+        "idle": "Idle",
+        "fan": "Fan"
       }
     }
   },
@@ -393,6 +398,7 @@
         "operation": "Operation",
         "fan_mode": "Fan mode",
         "swing_mode": "Swing mode",
+        "preset_mode": "Preset",
         "away_mode": "Away mode",
         "aux_heat": "Aux heat"
       },
@@ -548,9 +554,7 @@
       "connection_lost": "Connection lost. Reconnecting…"
     },
     "sidebar": {
-      "developer_tools": "Developer tools",
-      "external_app_configuration": "App Configuration",
-      "log_out": "Log out"
+      "external_app_configuration": "App Configuration"
     },
     "panel": {
       "config": {
@@ -581,6 +585,21 @@
             "core": {
               "header": "Configuration and Server Control",
               "introduction": "Changing your configuration can be a tiresome process. We know. This section will try to make your life a little bit easier.",
+              "core_config": {
+                "edit_requires_storage": "Editor disabled because config stored in configuration.yaml.",
+                "location_name": "Name of your Home Assistant installation",
+                "latitude": "Latitude",
+                "longitude": "Longitude",
+                "elevation": "Elevation",
+                "elevation_meters": "meters",
+                "time_zone": "Time Zone",
+                "unit_system": "Unit System",
+                "unit_system_imperial": "Imperial",
+                "unit_system_metric": "Metric",
+                "imperial_example": "Fahrenheit, pounds",
+                "metric_example": "Celsius, kilograms",
+                "save_button": "Save"
+              },
               "validation": {
                 "heading": "Configuration validation",
                 "introduction": "Validate your configuration if you recently made some changes to your configuration and want to make sure that it is all valid",
@@ -627,6 +646,8 @@
           "editor": {
             "introduction": "Use automations to bring your home alive",
             "default_name": "New Automation",
+            "load_error_not_editable": "Only automations in automations.yaml are editable.",
+            "load_error_unknown": "Error loading automation ({err_no}).",
             "save": "Save",
             "unsaved_confirm": "You have unsaved changes. Are you sure you want to leave?",
             "alias": "Name",
@@ -850,6 +871,12 @@
             "device_unavailable": "device unavailable",
             "entity_unavailable": "entity unavailable",
             "no_area": "No Area"
+          },
+          "config_flow": {
+            "external_step": {
+              "description": "This step requires you to visit an external website to be completed.",
+              "open_site": "Open website"
+            }
           }
         },
         "users": {
@@ -895,7 +922,39 @@
         },
         "zwave": {
           "caption": "Z-Wave",
-          "description": "Manage your Z-Wave network"
+          "description": "Manage your Z-Wave network",
+          "common": {
+            "value": "Value",
+            "instance": "Instance",
+            "index": "Index"
+          },
+          "network_management": {
+            "header": "Z-Wave Network Management",
+            "introduction": "Run commands that affect the Z-Wave network. You won't get feedback on whether most commands succeeded, but you can check the OZW Log to try to find out."
+          },
+          "network_status": {
+            "network_stopped": "Z-Wave Network Stopped",
+            "network_starting": "Starting Z-Wave Network...",
+            "network_starting_note": "This may take a while depending on the size of your network.",
+            "network_started": "Z-Wave Network Started",
+            "network_started_note_some_queried": "Awake nodes have been queried. Sleeping nodes will be queried when they wake.",
+            "network_started_note_all_queried": "All nodes have been queried."
+          },
+          "values": {
+            "header": "Node Values"
+          },
+          "services": {
+            "start_network": "Start Network",
+            "stop_network": "Stop Network",
+            "heal_network": "Heal Network",
+            "test_network": "Test Network",
+            "soft_reset": "Soft Reset",
+            "save_config": "Save Config",
+            "add_node_secure": "Add Node Secure",
+            "add_node": "Add Node",
+            "remove_node": "Remove Node",
+            "cancel_command": "Cancel Command"
+          }
         }
       },
       "history": {
@@ -976,7 +1035,12 @@
         "warning": {
           "entity_not_found": "Entity not available: {entity}",
           "entity_non_numeric": "Entity is non-numeric: {entity}"
-        }
+        },
+        "changed_toast": {
+          "message": "The Lovelace config was updated, would you like to refresh?",
+          "refresh": "Refresh"
+        },
+        "reload_lovelace": "Reload Lovelace"
       },
       "mailbox": {
         "empty": "You do not have any messages",
@@ -988,6 +1052,10 @@
         "current_user": "You are currently logged in as {fullName}.",
         "is_owner": "You are an owner.",
         "logout": "Log out",
+        "force_narrow": {
+          "header": "Always hide the sidebar",
+          "description": "This will hide the sidebar by default, similar to the mobile experience."
+        },
         "push_notifications": {
           "header": "Push Notifications",
           "description": "Send notifications to this device.",
@@ -1156,6 +1224,71 @@
           }
         }
       },
+      "page-demo": {
+        "cards": {
+          "demo": {
+            "demo_by": "by {name}",
+            "next_demo": "Next demo",
+            "introduction": "Welcome home! You've reached the Home Assistant demo where we showcase the best UIs created by our community.",
+            "learn_more": "Learn more about Home Assistant"
+          }
+        },
+        "config": {
+          "arsaboo": {
+            "names": {
+              "upstairs": "Upstairs",
+              "family_room": "Family Room",
+              "kitchen": "Kitchen",
+              "patio": "Patio",
+              "hallway": "Hallway",
+              "master_bedroom": "Master Bedroom",
+              "left": "Left",
+              "right": "Right",
+              "mirror": "Mirror"
+            },
+            "labels": {
+              "lights": "Lights",
+              "information": "Information",
+              "morning_commute": "Morning Commute",
+              "commute_home": "Commute to Home",
+              "entertainment": "Entertainment",
+              "activity": "Activity",
+              "hdmi_input": "HDMI Input",
+              "hdmi_switcher": "HDMI Switcher",
+              "volume": "Volume",
+              "total_tv_time": "Total TV Time",
+              "turn_tv_off": "Turn Television off",
+              "air": "Air"
+            },
+            "unit": {
+              "watching": "watching",
+              "minutes_abbr": "min"
+            }
+          }
+        }
+      },
+      "developer-tools": {
+        "tabs": {
+          "info": {
+            "title": "Info"
+          },
+          "events": {
+            "title": "Events"
+          },
+          "mqtt": {
+            "title": "MQTT"
+          },
+          "services": {
+            "title": "Services"
+          },
+          "states": {
+            "title": "States"
+          },
+          "templates": {
+            "title": "Template"
+          }
+        }
+      },
       "page-onboarding": {
         "intro": "Are you ready to awaken your home, reclaim your privacy and join a worldwide community of tinkerers?",
         "user": {
@@ -1172,6 +1305,14 @@
             "required_fields": "Fill in all required fields",
             "password_not_match": "Passwords don't match"
           }
+        },
+        "core-config": {
+          "intro": "Hello {name}, welcome to Home Assistant. How would you like to name your home?",
+          "intro_location": "We would like to know where you live. This information will help with displaying information and setting up sun-based automations. This data is never shared outside of your network.",
+          "intro_location_detect": "We can help you fill in this information by making a one-time request to an external service.",
+          "location_name_default": "Home",
+          "button_detect": "Detect",
+          "finish": "Next"
         },
         "integration": {
           "intro": "Devices and services are represented in Home Assistant as integrations. You can set them up now, or do it later from the configuration screen.",

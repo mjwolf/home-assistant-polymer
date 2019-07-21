@@ -1,6 +1,12 @@
 import "@material/mwc-button";
 
-import { fetchConfig, LovelaceConfig, saveConfig } from "../../data/lovelace";
+import {
+  fetchConfig,
+  LovelaceConfig,
+  saveConfig,
+  subscribeLovelaceUpdates,
+  WindowWithLovelaceProm,
+} from "../../data/lovelace";
 import "../../layouts/hass-loading-screen";
 import "../../layouts/hass-error-screen";
 import "./hui-root";
@@ -15,6 +21,7 @@ import {
 } from "lit-element";
 import { showSaveDialog } from "./editor/show-save-config-dialog";
 import { generateLovelaceConfig } from "./common/generate-lovelace-config";
+import { showToast } from "../../util/toast";
 
 interface LovelacePanelConfig {
   mode: "yaml" | "storage";
@@ -42,6 +49,8 @@ class LovelacePanel extends LitElement {
 
   private mqls?: MediaQueryList[];
 
+  private _saving: boolean = false;
+
   constructor() {
     super();
     this._closeEditor = this._closeEditor.bind(this);
@@ -66,7 +75,11 @@ class LovelacePanel extends LitElement {
     if (state === "error") {
       return html`
         <hass-error-screen title="Lovelace" .error="${this._errorMsg}">
-          <mwc-button on-click="_forceFetchConfig">Reload Lovelace</mwc-button>
+          <mwc-button on-click="_forceFetchConfig"
+            >${this.hass!.localize(
+              "ui.panel.lovelace.reload_lovelace"
+            )}</mwc-button
+          >
         </hass-error-screen>
       `;
     }
@@ -82,7 +95,11 @@ class LovelacePanel extends LitElement {
     }
 
     return html`
-      <hass-loading-screen rootnav></hass-loading-screen>
+      <hass-loading-screen
+        rootnav
+        .hass=${this.hass}
+        .narrow=${this.narrow}
+      ></hass-loading-screen>
     `;
   }
 
@@ -107,6 +124,16 @@ class LovelacePanel extends LitElement {
 
   public firstUpdated() {
     this._fetchConfig(false);
+    // we don't want to unsub as we want to stay informed of updates
+    subscribeLovelaceUpdates(this.hass!.connection, () =>
+      this._lovelaceChanged()
+    );
+    // reload lovelace on reconnect so we are sure we have the latest config
+    window.addEventListener("connection-status", (ev) => {
+      if (ev.detail === "connected") {
+        this._fetchConfig(false);
+      }
+    });
     this._updateColumns = this._updateColumns.bind(this);
     this.mqls = [300, 600, 900, 1200].map((width) => {
       const mql = matchMedia(`(min-width: ${width}px)`);
@@ -128,6 +155,7 @@ class LovelacePanel extends LitElement {
     } else if (this.lovelace && this.lovelace.mode === "generated") {
       // When lovelace is generated, we re-generate each time a user goes
       // to the states panel to make sure new entities are shown.
+      this._state = "loading";
       this._regenerateConfig();
     }
   }
@@ -135,6 +163,7 @@ class LovelacePanel extends LitElement {
   private async _regenerateConfig() {
     const conf = await generateLovelaceConfig(this.hass!, this.hass!.localize);
     this._setLovelaceConfig(conf, "generated");
+    this._state = "loaded";
   }
 
   private _closeEditor() {
@@ -149,8 +178,25 @@ class LovelacePanel extends LitElement {
     // Do -1 column if the menu is docked and open
     this._columns = Math.max(
       1,
-      matchColumns - Number(!this.narrow && this.hass!.dockedSidebar)
+      matchColumns -
+        Number(!this.narrow && this.hass!.dockedSidebar === "docked")
     );
+  }
+
+  private _lovelaceChanged() {
+    if (this._saving) {
+      this._saving = false;
+    } else {
+      showToast(this, {
+        message: this.hass!.localize("ui.panel.lovelace.changed_toast.message"),
+        action: {
+          action: () => this._fetchConfig(false),
+          text: this.hass!.localize("ui.panel.lovelace.changed_toast.refresh"),
+        },
+        duration: 0,
+        dismissable: false,
+      });
+    }
   }
 
   private _forceFetchConfig() {
@@ -160,9 +206,19 @@ class LovelacePanel extends LitElement {
   private async _fetchConfig(forceDiskRefresh) {
     let conf: LovelaceConfig;
     let confMode: Lovelace["mode"] = this.panel!.config.mode;
+    let confProm: Promise<LovelaceConfig>;
+    const llWindow = window as WindowWithLovelaceProm;
+
+    // On first load, we speed up loading page by having LL promise ready
+    if (llWindow.llConfProm) {
+      confProm = llWindow.llConfProm;
+      llWindow.llConfProm = undefined;
+    } else {
+      confProm = fetchConfig(this.hass!.connection, forceDiskRefresh);
+    }
 
     try {
-      conf = await fetchConfig(this.hass!, forceDiskRefresh);
+      conf = await confProm;
     } catch (err) {
       if (err.code !== "config_not_found") {
         // tslint:disable-next-line
@@ -209,6 +265,7 @@ class LovelacePanel extends LitElement {
             config: newConfig,
             mode: "storage",
           });
+          this._saving = true;
           await saveConfig(this.hass!, newConfig);
         } catch (err) {
           // tslint:disable-next-line

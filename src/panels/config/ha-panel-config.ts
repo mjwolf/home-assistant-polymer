@@ -5,12 +5,23 @@ import { HomeAssistant } from "../../types";
 import { CloudStatus, fetchCloudStatus } from "../../data/cloud";
 import { listenMediaQuery } from "../../common/dom/media_query";
 import { HassRouterPage, RouterOptions } from "../../layouts/hass-router-page";
+import {
+  CoreFrontendUserData,
+  getOptimisticFrontendUserDataCollection,
+} from "../../data/frontend";
+import { PolymerElement } from "@polymer/polymer";
+
+declare global {
+  // for fire event
+  interface HASSDomEvents {
+    "ha-refresh-cloud-status": undefined;
+  }
+}
 
 @customElement("ha-panel-config")
 class HaPanelConfig extends HassRouterPage {
   @property() public hass!: HomeAssistant;
-  @property() public _wideSidebar: boolean = false;
-  @property() public _wide: boolean = false;
+  @property() public narrow!: boolean;
 
   protected routerOptions: RouterOptions = {
     defaultPage: "dashboard",
@@ -85,6 +96,9 @@ class HaPanelConfig extends HassRouterPage {
     },
   };
 
+  @property() private _wideSidebar: boolean = false;
+  @property() private _wide: boolean = false;
+  @property() private _coreUserData?: CoreFrontendUserData;
   @property() private _cloudStatus?: CloudStatus;
 
   private _listeners: Array<() => void> = [];
@@ -99,6 +113,14 @@ class HaPanelConfig extends HassRouterPage {
     this._listeners.push(
       listenMediaQuery("(min-width: 1296px)", (matches) => {
         this._wideSidebar = matches;
+      })
+    );
+    this._listeners.push(
+      getOptimisticFrontendUserDataCollection(
+        this.hass.connection,
+        "core"
+      ).subscribe((coreUserData) => {
+        this._coreUserData = coreUserData || {};
       })
     );
   }
@@ -121,10 +143,30 @@ class HaPanelConfig extends HassRouterPage {
   }
 
   protected updatePageEl(el) {
-    el.route = this.routeTail;
-    el.hass = this.hass;
-    el.isWide = this.hass.dockedSidebar ? this._wideSidebar : this._wide;
-    el.cloudStatus = this._cloudStatus;
+    const showAdvanced = !!(
+      this._coreUserData && this._coreUserData.showAdvanced
+    );
+    const isWide =
+      this.hass.dockedSidebar === "docked" ? this._wideSidebar : this._wide;
+
+    if ("setProperties" in el) {
+      // As long as we have Polymer panels
+      (el as PolymerElement).setProperties({
+        route: this.routeTail,
+        hass: this.hass,
+        showAdvanced,
+        isWide,
+        narrow: this.narrow,
+        cloudStatus: this._cloudStatus,
+      });
+    } else {
+      el.route = this.routeTail;
+      el.hass = this.hass;
+      el.showAdvanced = showAdvanced;
+      el.isWide = isWide;
+      el.narrow = this.narrow;
+      el.cloudStatus = this._cloudStatus;
+    }
   }
 
   private async _updateCloudStatus() {

@@ -44,7 +44,7 @@ export const connectionMixin = (
         localize: () => "",
 
         translationMetadata,
-        dockedSidebar: false,
+        dockedSidebar: "docked",
         moreInfoEntityId: null,
         callService: async (domain, service, serviceData = {}) => {
           if (__DEV__) {

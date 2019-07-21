@@ -7,12 +7,8 @@
         "history": "Geschiedenis",
         "mailbox": "Postvak",
         "shopping_list": "Boodschappenlijst",
-        "dev-services": "Services",
-        "dev-states": "Toestanden",
-        "dev-events": "Gebeurtenissen",
-        "dev-templates": "Sjablonen",
-        "dev-mqtt": "MQTT",
         "dev-info": "Info",
+        "developer_tools": "Ontwikkelhulpmiddelen",
         "calendar": "Kalender",
         "profile": "Profiel"
     },
@@ -145,7 +141,8 @@
             "high_demand": "Hoge vraag",
             "heat_pump": "Warmtepomp",
             "gas": "Gas",
-            "manual": "Handmatig"
+            "manual": "Handmatig",
+            "heat_cool": "Verwarmen\/Koelen"
         },
         "configurator": {
             "configure": "Configureer",
@@ -311,6 +308,28 @@
                 "add_item": "Item toevoegen",
                 "microphone_tip": "Tik op de microfoon rechtsboven en zeg \"Add candy to my shopping list\""
             },
+            "developer-tools": {
+                "tabs": {
+                    "services": {
+                        "title": "Services"
+                    },
+                    "states": {
+                        "title": "Toestanden"
+                    },
+                    "events": {
+                        "title": "Gebeurtenissen"
+                    },
+                    "templates": {
+                        "title": "Sjablonen"
+                    },
+                    "mqtt": {
+                        "title": "MQTT"
+                    },
+                    "info": {
+                        "title": "Info"
+                    }
+                }
+            },
             "history": {
                 "showing_entries": "Toon items voor",
                 "period": "Periode"
@@ -355,6 +374,21 @@
                                 "introduction": "Beheer je Home Assistant-server ... vanuit Home Assistant.",
                                 "restart": "Herstarten",
                                 "stop": "Stop"
+                            },
+                            "core_config": {
+                                "edit_requires_storage": "Editor uitgeschakeld omdat de configuratie is opgeslagen in configuration.yaml",
+                                "location_name": "Naam van Home Assistant installatie",
+                                "latitude": "Breedtegraad",
+                                "longitude": "Lengtegraad",
+                                "elevation": "Hoogte",
+                                "elevation_meters": "meter",
+                                "time_zone": "Tijdzone",
+                                "unit_system": "Maatsysteem",
+                                "unit_system_imperial": "Imperiaal",
+                                "unit_system_metric": "Metrisch",
+                                "imperial_example": "Fahrenheit, ponden",
+                                "metric_example": "Celsius, kilogram",
+                                "save_button": "Opslaan"
                             }
                         }
                     }
@@ -545,7 +579,9 @@
                                 }
                             },
                             "learn_more": "Meer informatie over acties"
-                        }
+                        },
+                        "load_error_not_editable": "Alleen automatiseringen in automations.yaml kunnen worden bewerkt.",
+                        "load_error_unknown": "Fout bij laden van automatisering ({err_no})."
                     }
                 },
                 "script": {
@@ -554,7 +590,39 @@
                 },
                 "zwave": {
                     "caption": "Z-Wave",
-                    "description": "Beheer je Z-Wave-netwerk"
+                    "description": "Beheer je Z-Wave-netwerk",
+                    "network_management": {
+                        "header": "Z-Wave netwerkbeheer",
+                        "introduction": "Voer opdrachten uit die van invloed zijn op het Z-Wave-netwerk. Je krijgt geen feedback of de meeste commando's gelukt zijn, maar je kunt wel het OZW Logboek raadplegen om te proberen uit te vinden of het gelukt is."
+                    },
+                    "network_status": {
+                        "network_stopped": "Z-Wave netwerk gestopt",
+                        "network_starting": "Z-Wave netwerk starten...",
+                        "network_starting_note": "Dit kan een tijdje duren, afhankelijk van de grootte van uw netwerk.",
+                        "network_started": "Z-Wave netwerk gestart",
+                        "network_started_note_some_queried": "Alle wakkere nodes zijn opgevraagd. Slapende nodes worden opgevraagd wanneer ze wakker worden.",
+                        "network_started_note_all_queried": "Alle nodes zijn opgevraagd."
+                    },
+                    "services": {
+                        "start_network": "Start netwerk",
+                        "stop_network": "Stop Netwerk",
+                        "heal_network": "Herstel Netwerk",
+                        "test_network": "Test Netwerk",
+                        "soft_reset": "Soft Reset",
+                        "save_config": "Configuratie Opslaan",
+                        "add_node_secure": "Knooppunt veilig toevoegen",
+                        "add_node": "Node toevoegen",
+                        "remove_node": "Node verwijderen",
+                        "cancel_command": "Opdracht annuleren"
+                    },
+                    "common": {
+                        "value": "Waarde",
+                        "instance": "Exemplaar",
+                        "index": "Index"
+                    },
+                    "values": {
+                        "header": "Knooppunt waarden"
+                    }
                 },
                 "users": {
                     "caption": "Gebruikers",
@@ -598,11 +666,18 @@
                         "delete_confirm": "Weet u zeker dat u deze integratie wilt verwijderen?",
                         "restart_confirm": "Herstart Home Assistant om het verwijderen van deze integratie te voltooien",
                         "manuf": "door {manufacturer}",
-                        "hub": "Verbonden via",
+                        "via": "Verbonden via",
                         "firmware": "Firmware: {version}",
                         "device_unavailable": "apparaat niet beschikbaar",
                         "entity_unavailable": "entiteit niet beschikbaar",
-                        "no_area": "Geen gebied"
+                        "no_area": "Geen Gebied",
+                        "hub": "Verbonden via"
+                    },
+                    "config_flow": {
+                        "external_step": {
+                            "description": "Deze stap vereist dat u een externe website bezoekt om dit te voltooien.",
+                            "open_site": "Open website"
+                        }
                     }
                 },
                 "zha": {
@@ -638,17 +713,17 @@
                     "no_areas": "Het lijkt erop dat je nog geen gebieden hebt!",
                     "create_area": "MAAK GEBIED",
                     "editor": {
-                        "default_name": "Nieuw gebied",
+                        "default_name": "Nieuw Gebied",
                         "delete": "VERWIJDEREN",
                         "update": "BIJWERKEN",
                         "create": "MAKEN"
                     }
                 },
                 "entity_registry": {
-                    "caption": "Entiteiten register",
-                    "description": "Overzicht van alle gekende entiteiten",
+                    "caption": "Entiteitenregister",
+                    "description": "Overzicht van alle geregistreerde entiteiten",
                     "picker": {
-                        "header": "Entiteiten register",
+                        "header": "Entiteitenregister",
                         "unavailable": "(niet beschikbaar)",
                         "introduction": "Home Assistant houdt een register bij van elke entiteit die het ooit heeft gezien en die uniek kan worden geïdentificeerd. Elk van deze entiteiten krijgt een entiteit-ID toegewezen die alleen voor deze entiteit wordt gereserveerd.",
                         "introduction2": "Gebruik het entiteitenregister om de naam te overschrijven, de entiteits-ID te wijzigen of het item te verwijderen uit de Home Assistant. Opmerking: als u de entiteitsregistervermelding verwijdert, wordt de entiteit niet verwijderd. Hiertoe volgt u de onderstaande koppeling en verwijdert u deze van de integratiespagina.",
@@ -656,7 +731,7 @@
                     },
                     "editor": {
                         "unavailable": "Deze entiteit is momenteel niet beschikbaar.",
-                        "default_name": "Nieuw gebied",
+                        "default_name": "Nieuw Gebied",
                         "delete": "VERWIJDEREN",
                         "update": "BIJWERKEN"
                     }
@@ -720,7 +795,6 @@
                 },
                 "current_user": "U bent momenteel ingelogd als {fullName}.",
                 "is_owner": "U bent eigenaar.",
-                "logout": "Uitloggen",
                 "change_password": {
                     "header": "Wachtwoord wijzigen",
                     "current_password": "Huidige wachtwoord",
@@ -741,7 +815,8 @@
                     "step_done": "Instellen voltooid voor {step}",
                     "close": "Sluiten",
                     "submit": "Verzenden"
-                }
+                },
+                "logout": "Uitloggen"
             },
             "page-authorize": {
                 "initializing": "Initialiseren",
@@ -860,6 +935,14 @@
                     "intro": "Apparaten en services worden in Home Assistant weergegeven als integraties. U kunt ze nu instellen of later via het configuratiescherm.",
                     "more_integrations": "Meer",
                     "finish": "Voltooien"
+                },
+                "core-config": {
+                    "intro": "Hallo {name}, welkom bij Home Assistant. Welke naam wil je je huis geven?",
+                    "intro_location": "We willen graag weten waar je woont. Deze informatie zal helpen bij het weergeven van informatie en het instellen van op de zon gebaseerde automatiseringen. Deze gegevens worden nooit gedeeld buiten uw netwerk.",
+                    "intro_location_detect": "Wij kunnen u helpen deze informatie in te vullen door eenmalig een verbinding te maken met een externe service.",
+                    "location_name_default": "Huis",
+                    "button_detect": "Detecteren",
+                    "finish": "Volgende"
                 }
             },
             "lovelace": {
@@ -933,12 +1016,59 @@
                 "warning": {
                     "entity_not_found": "Entiteit niet beschikbaar: {entity}",
                     "entity_non_numeric": "Entiteit is niet-numeriek: {entity}"
+                },
+                "changed_toast": {
+                    "message": "De Lovelace configuratie is bijgewerkt. Wil je de pagina vernieuwen?",
+                    "refresh": "Vernieuwen"
+                },
+                "reload_lovelace": "Lovelace herladen"
+            },
+            "page-demo": {
+                "cards": {
+                    "demo": {
+                        "demo_by": "door {name}",
+                        "next_demo": "Volgende demo",
+                        "introduction": "Welkom thuis! Je hebt de Home Assistant demo bereikt waar we de beste UI's van onze community laten zien.",
+                        "learn_more": "Meer informatie over Home Assistant"
+                    }
+                },
+                "config": {
+                    "arsaboo": {
+                        "names": {
+                            "upstairs": "Boven",
+                            "family_room": "Familiekamer",
+                            "kitchen": "Keuken",
+                            "patio": "Achtertuin",
+                            "hallway": "Gang",
+                            "master_bedroom": "Hoofdslaapkamer",
+                            "left": "Links",
+                            "right": "Rechts",
+                            "mirror": "Spiegel"
+                        },
+                        "labels": {
+                            "lights": "Lichten",
+                            "information": "Informatie",
+                            "morning_commute": "Ochtend reis",
+                            "commute_home": "Reis naar huis",
+                            "entertainment": "Entertainment",
+                            "activity": "Activiteit",
+                            "hdmi_input": "HDMI-ingang",
+                            "hdmi_switcher": "HDMI-switcher",
+                            "volume": "Volume",
+                            "total_tv_time": "Totale TV-tijd",
+                            "turn_tv_off": "Schakel televisie uit",
+                            "air": "Lucht"
+                        },
+                        "unit": {
+                            "watching": "kijkend",
+                            "minutes_abbr": "min"
+                        }
+                    }
                 }
             }
         },
         "sidebar": {
             "log_out": "Uitloggen",
-            "developer_tools": "Ontwikkelaarstools",
             "external_app_configuration": "App configuratie"
         },
         "common": {
@@ -1042,7 +1172,8 @@
                 "fan_mode": "Ventilatormodus",
                 "swing_mode": "Swingmodus",
                 "away_mode": "Afwezigheidsmodus",
-                "aux_heat": "Extra warmte"
+                "aux_heat": "Extra warmte",
+                "preset_mode": "Voorinstelling"
             },
             "lock": {
                 "code": "Code",
@@ -1115,7 +1246,7 @@
                     "setting": "Ondergang"
                 },
                 "updater": {
-                    "title": "Instructies bijwerken"
+                    "title": "Update-instructies"
                 }
             }
         },
@@ -1187,6 +1318,16 @@
                 "off": "Uit",
                 "on": "Aan",
                 "auto": "Auto"
+            },
+            "preset_mode": {
+                "none": "Geen",
+                "eco": "Eco",
+                "away": "Afwezig",
+                "boost": "Boost",
+                "comfort": "Comfort",
+                "home": "Thuis",
+                "sleep": "Slapen",
+                "activity": "Activiteit"
             }
         }
     },

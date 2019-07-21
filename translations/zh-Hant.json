@@ -7,12 +7,8 @@
         "history": "歷史",
         "mailbox": "郵箱",
         "shopping_list": "購物清單",
-        "dev-services": "服務",
-        "dev-states": "狀態",
-        "dev-events": "事件",
-        "dev-templates": "模板",
-        "dev-mqtt": "MQTT",
         "dev-info": "資訊",
+        "developer_tools": "開發工具",
         "calendar": "行事曆",
         "profile": "個人設定"
     },
@@ -136,7 +132,7 @@
             "heat": "暖氣",
             "cool": "冷氣",
             "idle": "待命",
-            "auto": "自動模式",
+            "auto": "自動",
             "dry": "除濕模式",
             "fan_only": "僅送風",
             "eco": "節能模式",
@@ -145,7 +141,8 @@
             "high_demand": "高用量",
             "heat_pump": "暖氣",
             "gas": "瓦斯模式",
-            "manual": "手動"
+            "manual": "手動",
+            "heat_cool": "暖氣\/冷氣"
         },
         "configurator": {
             "configure": "設定",
@@ -311,6 +308,28 @@
                 "add_item": "新加入清單",
                 "microphone_tip": "點擊右上角的麥克風圖示，並說\"加入糖果到我的購物清單內\""
             },
+            "developer-tools": {
+                "tabs": {
+                    "services": {
+                        "title": "服務"
+                    },
+                    "states": {
+                        "title": "狀態"
+                    },
+                    "events": {
+                        "title": "事件"
+                    },
+                    "templates": {
+                        "title": "模板"
+                    },
+                    "mqtt": {
+                        "title": "MQTT"
+                    },
+                    "info": {
+                        "title": "資訊"
+                    }
+                }
+            },
             "history": {
                 "showing_entries": "選擇要查看的時間",
                 "period": "期間長"
@@ -355,6 +374,21 @@
                                 "introduction": "控制 Home Assistant 伺服器。",
                                 "restart": "重啟",
                                 "stop": "停止"
+                            },
+                            "core_config": {
+                                "edit_requires_storage": "由於 configuration.yaml 內已儲存設定，編輯功能已關閉。",
+                                "location_name": "Home Assistant 安裝名稱",
+                                "latitude": "緯度",
+                                "longitude": "經度",
+                                "elevation": "海拔",
+                                "elevation_meters": "公尺",
+                                "time_zone": "時區",
+                                "unit_system": "單位系統",
+                                "unit_system_imperial": "英制",
+                                "unit_system_metric": "公制",
+                                "imperial_example": "華氏、磅",
+                                "metric_example": "攝氏、公斤",
+                                "save_button": "儲存"
                             }
                         }
                     }
@@ -545,7 +579,9 @@
                                 }
                             },
                             "learn_more": "詳細了解動作"
-                        }
+                        },
+                        "load_error_not_editable": "僅有 automations.yaml 內的自動化方能編輯。",
+                        "load_error_unknown": "載入自動化錯誤（{err_no}）。"
                     }
                 },
                 "script": {
@@ -554,7 +590,39 @@
                 },
                 "zwave": {
                     "caption": "Z-Wave",
-                    "description": "管理 Z-Wave 網絡"
+                    "description": "管理 Z-Wave 網絡",
+                    "network_management": {
+                        "header": "Z-Wave 網路管理",
+                        "introduction": "執行令命將會影響 Z-Wave 網路。將無法獲得回饋或指令是否成功執行，但可透過 OZW 日誌進行查詢。"
+                    },
+                    "network_status": {
+                        "network_stopped": "Z-Wave 網路已停止",
+                        "network_starting": "正在啟用 Z-Wave 網路...",
+                        "network_starting_note": "根據您的網路規模，啟用可能需要一點時間。",
+                        "network_started": "Z-Wave 網路已啟用",
+                        "network_started_note_some_queried": "已查詢喚醒之節點。睡眠中節點將於喚醒後進行查詢。",
+                        "network_started_note_all_queried": "已查詢所有節點。"
+                    },
+                    "services": {
+                        "start_network": "啟用網路",
+                        "stop_network": "停止網路",
+                        "heal_network": "修復網路",
+                        "test_network": "測試網路",
+                        "soft_reset": "重開機",
+                        "save_config": "儲存設定",
+                        "add_node_secure": "新增節點來源",
+                        "add_node": "新增節點",
+                        "remove_node": "移除節點",
+                        "cancel_command": "取消命令"
+                    },
+                    "common": {
+                        "value": "數值",
+                        "instance": "實例",
+                        "index": "指數"
+                    },
+                    "values": {
+                        "header": "節點數值"
+                    }
                 },
                 "users": {
                     "caption": "用戶",
@@ -598,11 +666,18 @@
                         "delete_confirm": "確定要刪除此整合？",
                         "restart_confirm": "重啟 Home Assistant 以完成此整合移動",
                         "manuf": "廠牌：{manufacturer}",
-                        "hub": "連線：",
+                        "via": "連線：",
                         "firmware": "韌體：{version}",
                         "device_unavailable": "裝置不可用",
                         "entity_unavailable": "物件不可用",
-                        "no_area": "無分區"
+                        "no_area": "無分區",
+                        "hub": "連線："
+                    },
+                    "config_flow": {
+                        "external_step": {
+                            "description": "此步驟將需要開啟外部網站方能完成。",
+                            "open_site": "開啟網站"
+                        }
                     }
                 },
                 "zha": {
@@ -720,7 +795,6 @@
                 },
                 "current_user": "目前登入身份：{fullName}。",
                 "is_owner": "你為擁有者。",
-                "logout": "登出",
                 "change_password": {
                     "header": "變更密碼",
                     "current_password": "目前密碼",
@@ -741,7 +815,8 @@
                     "step_done": "{step}已設定完成",
                     "close": "關閉",
                     "submit": "傳送"
-                }
+                },
+                "logout": "登出"
             },
             "page-authorize": {
                 "initializing": "初始化中",
@@ -860,6 +935,14 @@
                     "intro": "將會於 Home Assistant 整合中呈現的裝置與服務。可以現在進行設定，或者稍後於設定選單中進行。",
                     "more_integrations": "更多",
                     "finish": "完成"
+                },
+                "core-config": {
+                    "intro": "{name}、你好，歡迎使用 Home Assistant。為您的家庭取個名字吧？",
+                    "intro_location": "希望能夠提供您所居住的區域，資料將協助所顯示的資訊內容、設定以日出日落為基礎的自動化。此資料將絕不會與外部網路進行分享。",
+                    "intro_location_detect": "設定可以藉由一次性請求外部服務、以協助您填寫此項資料。",
+                    "location_name_default": "首頁",
+                    "button_detect": "偵測",
+                    "finish": "下一步"
                 }
             },
             "lovelace": {
@@ -933,12 +1016,59 @@
                 "warning": {
                     "entity_not_found": "物件不可用：{entity}",
                     "entity_non_numeric": "物件為非數字：{entity}"
+                },
+                "changed_toast": {
+                    "message": "Lovelace 設定已更新，是否要更新頁面？",
+                    "refresh": "更新"
+                },
+                "reload_lovelace": "重新載入 Lovelace"
+            },
+            "page-demo": {
+                "cards": {
+                    "demo": {
+                        "demo_by": "由 {name}",
+                        "next_demo": "下一個展示",
+                        "introduction": "歡迎回家！您正在使用 Home Assistatnt 展示功能，由社群所創作的最佳介面展示。",
+                        "learn_more": "詳細了解 Home Assistant"
+                    }
+                },
+                "config": {
+                    "arsaboo": {
+                        "names": {
+                            "upstairs": "樓上",
+                            "family_room": "家庭房",
+                            "kitchen": "廚房",
+                            "patio": "庭院",
+                            "hallway": "走廊",
+                            "master_bedroom": "主臥室",
+                            "left": "左",
+                            "right": "右",
+                            "mirror": "鏡子"
+                        },
+                        "labels": {
+                            "lights": "燈光",
+                            "information": "資訊",
+                            "morning_commute": "晨間通勤",
+                            "commute_home": "返家通勤",
+                            "entertainment": "視聽室",
+                            "activity": "模式",
+                            "hdmi_input": "HDMI 輸入",
+                            "hdmi_switcher": "HDMI 切換器",
+                            "volume": "音量",
+                            "total_tv_time": "總觀看時間",
+                            "turn_tv_off": "關閉電視",
+                            "air": "空氣"
+                        },
+                        "unit": {
+                            "watching": "正在觀看",
+                            "minutes_abbr": "分"
+                        }
+                    }
                 }
             }
         },
         "sidebar": {
             "log_out": "登出",
-            "developer_tools": "開發工具",
             "external_app_configuration": "App 設定"
         },
         "common": {
@@ -1042,11 +1172,12 @@
                 "fan_mode": "風速模式",
                 "swing_mode": "擺動模式",
                 "away_mode": "外出模式",
-                "aux_heat": "輔助暖氣"
+                "aux_heat": "輔助暖氣",
+                "preset_mode": "預置"
             },
             "lock": {
                 "code": "密碼",
-                "lock": "鎖",
+                "lock": "上鎖",
                 "unlock": "解鎖"
             },
             "vacuum": {
@@ -1186,7 +1317,17 @@
             "fan_mode": {
                 "off": "關閉",
                 "on": "開啟",
-                "auto": "自動模式"
+                "auto": "自動"
+            },
+            "preset_mode": {
+                "none": "無",
+                "eco": "節能",
+                "away": "離家",
+                "boost": "全速",
+                "comfort": "舒適",
+                "home": "在家",
+                "sleep": "睡眠",
+                "activity": "活動"
             }
         }
     },

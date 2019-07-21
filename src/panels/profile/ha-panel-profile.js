@@ -1,6 +1,5 @@
 import "@polymer/app-layout/app-header-layout/app-header-layout";
 import "@polymer/app-layout/app-header/app-header";
-import "@polymer/paper-card/paper-card";
 import "@polymer/paper-item/paper-item-body";
 import "@polymer/paper-item/paper-item";
 import "@material/mwc-button";
@@ -8,20 +7,25 @@ import "@polymer/app-layout/app-toolbar/app-toolbar";
 import { html } from "@polymer/polymer/lib/utils/html-tag";
 import { PolymerElement } from "@polymer/polymer/polymer-element";
 
+import "../../components/ha-card";
 import "../../components/ha-menu-button";
 import "../../resources/ha-style";
+
+import { getOptimisticFrontendUserDataCollection } from "../../data/frontend";
 
 import { EventsMixin } from "../../mixins/events-mixin";
 import LocalizeMixin from "../../mixins/localize-mixin";
 
 import "./ha-change-password-card";
 import "./ha-mfa-modules-card";
+import "./ha-advanced-mode-card";
 import "./ha-refresh-tokens-card";
 import "./ha-long-lived-access-tokens-card";
 
 import "./ha-pick-language-row";
 import "./ha-pick-theme-row";
 import "./ha-push-notifications-row";
+import "./ha-force-narrow-row";
 
 /*
  * @appliesMixin EventsMixin
@@ -52,13 +56,16 @@ class HaPanelProfile extends EventsMixin(LocalizeMixin(PolymerElement)) {
       <app-header-layout has-scrolling-region>
         <app-header slot="header" fixed>
           <app-toolbar>
-            <ha-menu-button></ha-menu-button>
+            <ha-menu-button
+              hass="[[hass]]"
+              narrow="[[narrow]]"
+            ></ha-menu-button>
             <div main-title>[[localize('panel.profile')]]</div>
           </app-toolbar>
         </app-header>
 
         <div class="content">
-          <paper-card heading="[[hass.user.name]]">
+          <ha-card header="[[hass.user.name]]">
             <div class="card-content">
               [[localize('ui.panel.profile.current_user', 'fullName',
               hass.user.name)]]
@@ -77,6 +84,15 @@ class HaPanelProfile extends EventsMixin(LocalizeMixin(PolymerElement)) {
               narrow="[[narrow]]"
               hass="[[hass]]"
             ></ha-pick-theme-row>
+            <template
+              is="dom-if"
+              if="[[_showNarrowRow(hass.dockedSidebar, narrow)]]"
+            >
+              <ha-force-narrow-row
+                narrow="[[narrow]]"
+                hass="[[hass]]"
+              ></ha-force-narrow-row>
+            </template>
             <ha-push-notifications-row
               narrow="[[narrow]]"
               hass="[[hass]]"
@@ -87,7 +103,7 @@ class HaPanelProfile extends EventsMixin(LocalizeMixin(PolymerElement)) {
                 >[[localize('ui.panel.profile.logout')]]</mwc-button
               >
             </div>
-          </paper-card>
+          </ha-card>
 
           <template is="dom-if" if="[[_canChangePassword(hass.user)]]">
             <ha-change-password-card hass="[[hass]]"></ha-change-password-card>
@@ -97,6 +113,13 @@ class HaPanelProfile extends EventsMixin(LocalizeMixin(PolymerElement)) {
             hass="[[hass]]"
             mfa-modules="[[hass.user.mfa_modules]]"
           ></ha-mfa-modules-card>
+
+          <template is="dom-if" if="[[_isAdmin(hass.user)]]">
+            <ha-advanced-mode-card
+              hass="[[hass]]"
+              core-user-data="[[_coreUserData]]"
+            ></ha-advanced-mode-card>
+          </template>
 
           <ha-refresh-tokens-card
             hass="[[hass]]"
@@ -119,12 +142,27 @@ class HaPanelProfile extends EventsMixin(LocalizeMixin(PolymerElement)) {
       hass: Object,
       narrow: Boolean,
       _refreshTokens: Array,
+      _coreUserData: Object,
     };
   }
 
   connectedCallback() {
     super.connectedCallback();
     this._refreshRefreshTokens();
+    this._unsubCoreData = getOptimisticFrontendUserDataCollection(
+      this.hass.connection,
+      "core"
+    ).subscribe((coreUserData) => {
+      this._coreUserData = coreUserData;
+    });
+  }
+
+  disconnectedCallback() {
+    super.disconnectedCallback();
+    if (this._unsubCoreData) {
+      this._unsubCoreData();
+      this._unsubCoreData = undefined;
+    }
   }
 
   async _refreshRefreshTokens() {
@@ -141,6 +179,14 @@ class HaPanelProfile extends EventsMixin(LocalizeMixin(PolymerElement)) {
     return user.credentials.some(
       (cred) => cred.auth_provider_type === "homeassistant"
     );
+  }
+
+  _isAdmin(user) {
+    return user.is_admin;
+  }
+
+  _showNarrowRow(dockedSidebar, narrow) {
+    return dockedSidebar === "auto" ? !narrow : true;
   }
 }
 

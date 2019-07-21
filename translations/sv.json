@@ -7,12 +7,8 @@
         "history": "Historik",
         "mailbox": "Brevlåda",
         "shopping_list": "Inköpslista",
-        "dev-services": "Tjänster",
-        "dev-states": "Tillstånd",
-        "dev-events": "Händelser",
-        "dev-templates": "Mallar",
-        "dev-mqtt": "MQTT",
         "dev-info": "Info",
+        "developer_tools": "Utvecklarverktyg",
         "calendar": "Kalender",
         "profile": "Profil"
     },
@@ -311,6 +307,25 @@
                 "add_item": "Lägg till objekt",
                 "microphone_tip": "Tryck på mikrofonen längst upp till höger och säg \"Add candy to my shopping list\""
             },
+            "developer-tools": {
+                "tabs": {
+                    "services": {
+                        "title": "Tjänster"
+                    },
+                    "states": {
+                        "title": "Tillstånd"
+                    },
+                    "events": {
+                        "title": "Händelser"
+                    },
+                    "templates": {
+                        "title": "Mallar"
+                    },
+                    "mqtt": {
+                        "title": "MQTT"
+                    }
+                }
+            },
             "history": {
                 "showing_entries": "Visar poster för",
                 "period": "Period"
@@ -355,6 +370,21 @@
                                 "introduction": "Hantera din Home Assistant server... från Home Assistant.",
                                 "restart": "Starta om",
                                 "stop": "Stoppa"
+                            },
+                            "core_config": {
+                                "edit_requires_storage": "Redigeraren är inaktiverad eftersom konfigurationen lagras i configuration.yaml.",
+                                "location_name": "Namn på din Home Assistant installation",
+                                "latitude": "Latitud",
+                                "longitude": "Longitud",
+                                "elevation": "Höjd över havet",
+                                "elevation_meters": "meter",
+                                "time_zone": "Tidszon",
+                                "unit_system": "Enhets system",
+                                "unit_system_imperial": "Imperial",
+                                "unit_system_metric": "Metrisk",
+                                "imperial_example": "Fahrenheit, pounds",
+                                "metric_example": "Celsius, kilogram",
+                                "save_button": "Spara"
                             }
                         }
                     }
@@ -545,7 +575,9 @@
                                 }
                             },
                             "learn_more": "Lär dig mer om händelser"
-                        }
+                        },
+                        "load_error_not_editable": "Endast automatiseringar i automations.yaml kan redigeras.",
+                        "load_error_unknown": "Fel vid inläsning av automatisering ({err_no})."
                     }
                 },
                 "script": {
@@ -598,11 +630,18 @@
                         "delete_confirm": "Är du säker på att du vill radera denna integration?",
                         "restart_confirm": "Starta om Home Assistant för att slutföra borttagningen av denna integration",
                         "manuf": "av {manufacturer}",
-                        "hub": "Ansluten via",
+                        "via": "Ansluten via",
                         "firmware": "Firmware: {version}",
                         "device_unavailable": "enhet otillgänglig",
                         "entity_unavailable": "entitet otillgänglig",
-                        "no_area": "Inget område (\"area\")"
+                        "no_area": "Inget område (\"area\")",
+                        "hub": "Ansluten via"
+                    },
+                    "config_flow": {
+                        "external_step": {
+                            "description": "Det här steget kräver att du besöker en extern webbplats för att slutföra.",
+                            "open_site": "Öppna webbplats"
+                        }
                     }
                 },
                 "zha": {
@@ -720,7 +759,6 @@
                 },
                 "current_user": "Du är inloggad som {fullName}.",
                 "is_owner": "Du är en ägare.",
-                "logout": "Logga ut",
                 "change_password": {
                     "header": "Ändra lösenord",
                     "current_password": "Nuvarande lösenord",
@@ -855,6 +893,19 @@
                         "required_fields": "Fyll i alla fält som krävs",
                         "password_not_match": "Lösenorden överensstämmer inte"
                     }
+                },
+                "integration": {
+                    "intro": "Enheter och tjänster representeras i Home Assistant som integrationer. Du kan ställa in dem nu eller göra det senare från konfigurations-skärmen.",
+                    "more_integrations": "Mer",
+                    "finish": "Avsluta"
+                },
+                "core-config": {
+                    "intro": "Hej {name} , välkommen till Home Assistant. Hur skulle du vilja namnge ditt hem?",
+                    "intro_location": "Vi skulle vilja veta var du bor. Den här informationen hjälper dig att visa information och ställa in solbaserade automatiseringar. Dessa data delas aldrig utanför nätverket.",
+                    "intro_location_detect": "Vi kan hjälpa dig att fylla i denna information genom att göra en engångsförfrågan till en extern tjänst.",
+                    "location_name_default": "Hem",
+                    "button_detect": "Upptäcka",
+                    "finish": "Nästa"
                 }
             },
             "lovelace": {
@@ -868,6 +919,14 @@
                         "title": "Välkommen hem",
                         "no_devices": "På den här sidan kan du styra dina enheter, men det ser ut som om du inte har några enheter ännu. Gå till integrationssidan för att komma igång.",
                         "go_to_integrations_page": "Gå till integrationssidan."
+                    },
+                    "picture-elements": {
+                        "hold": "Håll:",
+                        "tap": "Tryck:",
+                        "navigate_to": "Navigera till {location}",
+                        "toggle": "Växla {name}",
+                        "call_service": "Kör tjänst {name}",
+                        "more_info": "Visa mer-info: {name}"
                     }
                 },
                 "editor": {
@@ -920,12 +979,60 @@
                 "warning": {
                     "entity_not_found": "Enheten är ej tillgänglig: {entity}",
                     "entity_non_numeric": "Enheten är icke-numerisk: {entity}"
+                },
+                "changed_toast": {
+                    "message": "Lovelace-konfigurationen uppdaterades, vill du ladda om?",
+                    "refresh": "Uppdatera"
+                },
+                "reload_lovelace": "Ladda om Lovelace"
+            },
+            "page-demo": {
+                "cards": {
+                    "demo": {
+                        "demo_by": "av {name}",
+                        "next_demo": "Nästa demonstration",
+                        "introduction": "Välkommen hem! Du har nått Home Assistant demon, var vi visar upp de bästa användargränssnitt som skapats av vårt community.",
+                        "learn_more": "Lär dig mer om Home Assistant"
+                    }
+                },
+                "config": {
+                    "arsaboo": {
+                        "names": {
+                            "upstairs": "Övervåningen",
+                            "family_room": "Familjerum",
+                            "kitchen": "Kök",
+                            "patio": "Uteplats",
+                            "hallway": "Hall",
+                            "master_bedroom": "Huvudsovrum",
+                            "left": "Vänster",
+                            "right": "Höger",
+                            "mirror": "Spegla"
+                        },
+                        "labels": {
+                            "lights": "Ljus",
+                            "information": "Information",
+                            "morning_commute": "Morgonpendling",
+                            "commute_home": "Pendling hem",
+                            "entertainment": "Underhållning",
+                            "activity": "Aktivitet",
+                            "hdmi_input": "HDMI-ingång",
+                            "hdmi_switcher": "HDMI-omkopplare",
+                            "volume": "Volym",
+                            "total_tv_time": "TV-tid totalt",
+                            "turn_tv_off": "Stäng av TV",
+                            "air": "Fläkt"
+                        },
+                        "unit": {
+                            "watching": "ser på",
+                            "minutes_abbr": "min"
+                        }
+                    }
                 }
             }
         },
         "sidebar": {
             "log_out": "Logga ut",
-            "developer_tools": "Utvecklarverktyg"
+            "external_app_configuration": "Appkonfiguration"
         },
         "common": {
             "loading": "Läser in",

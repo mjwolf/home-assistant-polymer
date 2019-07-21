@@ -20,7 +20,6 @@ import "@polymer/paper-listbox/paper-listbox";
 import "@polymer/paper-menu-button/paper-menu-button";
 import "@polymer/paper-tabs/paper-tab";
 import "@polymer/paper-tabs/paper-tabs";
-import { HassEntities } from "home-assistant-js-websocket";
 
 import scrollToTarget from "../../common/dom/scroll-to-target";
 
@@ -30,17 +29,13 @@ import "../../components/ha-paper-icon-button-arrow-next";
 import "../../components/ha-paper-icon-button-arrow-prev";
 import "../../components/ha-icon";
 import { loadModule, loadCSS, loadJS } from "../../common/dom/load_resource";
-import { subscribeNotifications } from "../../data/ws-notifications";
 import { debounce } from "../../common/util/debounce";
 import { HomeAssistant } from "../../types";
 import { LovelaceConfig } from "../../data/lovelace";
 import { navigate } from "../../common/navigate";
 import { fireEvent } from "../../common/dom/fire_event";
-import { computeNotifications } from "./common/compute-notifications";
 import { swapView } from "./editor/config-util";
 
-import "./components/notifications/hui-notification-drawer";
-import "./components/notifications/hui-notifications-button";
 import "./hui-view";
 // Not a duplicate import, this one is for type
 // tslint:disable-next-line
@@ -57,8 +52,6 @@ import { computeRTLDirection } from "../../common/util/compute_rtl";
 const CSS_CACHE = {};
 const JS_CACHE = {};
 
-let loadedUnusedEntities = false;
-
 class HUIRoot extends LitElement {
   @property() public hass?: HomeAssistant;
   @property() public lovelace?: Lovelace;
@@ -67,12 +60,9 @@ class HUIRoot extends LitElement {
   @property() public route?: { path: string; prefix: string };
   @property() private _routeData?: { view: string };
   @property() private _curView?: number | "hass-unused-entities";
-  @property() private _notificationsOpen = false;
-  @property() private _persistentNotifications?: Notification[];
   private _viewCache?: { [viewId: string]: HUIView };
 
   private _debouncedConfigChanged: () => void;
-  private _unsubNotifications?: () => void;
 
   constructor() {
     super();
@@ -85,35 +75,11 @@ class HUIRoot extends LitElement {
     );
   }
 
-  public connectedCallback(): void {
-    super.connectedCallback();
-    this._unsubNotifications = subscribeNotifications(
-      this.hass!.connection,
-      (notifications) => {
-        this._persistentNotifications = notifications;
-      }
-    );
-  }
-
-  public disconnectedCallback(): void {
-    super.disconnectedCallback();
-    if (this._unsubNotifications) {
-      this._unsubNotifications();
-    }
-  }
-
   protected render(): TemplateResult | void {
     return html`
     <app-route .route="${this.route}" pattern="/:view" data="${
       this._routeData
     }" @data-changed="${this._routeDataChanged}"></app-route>
-    <hui-notification-drawer
-      .hass="${this.hass}"
-      .notifications="${this._notifications}"
-      .open="${this._notificationsOpen}"
-      @open-changed="${this._handleNotificationsOpenChanged}"
-      .narrow="${this.narrow}"
-    ></hui-notification-drawer>
     <ha-app-layout id="layout">
       <app-header slot="header" effects="waterfall" class="${classMap({
         "edit-mode": this._editMode,
@@ -146,6 +112,7 @@ class HUIRoot extends LitElement {
                     horizontal-offset="-5"
                   >
                     <paper-icon-button
+                      aria-label="Open Lovelace menu"
                       icon="hass:dots-vertical"
                       slot="dropdown-trigger"
                     ></paper-icon-button>
@@ -164,14 +131,11 @@ class HUIRoot extends LitElement {
               `
             : html`
                 <app-toolbar>
-                  <ha-menu-button></ha-menu-button>
+                  <ha-menu-button
+                    .hass=${this.hass}
+                    .narrow=${this.narrow}
+                  ></ha-menu-button>
                   <div main-title>${this.config.title || "Home Assistant"}</div>
-                  <hui-notifications-button
-                    .hass="${this.hass}"
-                    .opened="${this._notificationsOpen}"
-                    @opened-changed="${this._handleNotificationsOpenChanged}"
-                    .notifications="${this._notifications}"
-                  ></hui-notifications-button>
                   <ha-start-voice-button
                     .hass="${this.hass}"
                   ></ha-start-voice-button>
@@ -197,11 +161,15 @@ class HUIRoot extends LitElement {
                             >
                           `
                         : ""}
-                      <paper-item @click="${this._handleUnusedEntities}"
-                        >${this.hass!.localize(
-                          "ui.panel.lovelace.menu.unused_entities"
-                        )}</paper-item
-                      >
+                      ${__DEMO__ /* No unused entities available in the demo */
+                        ? ""
+                        : html`
+                            <paper-item @click="${this._handleUnusedEntities}">
+                              ${this.hass!.localize(
+                                "ui.panel.lovelace.menu.unused_entities"
+                              )}
+                            </paper-item>
+                          `}
                       <paper-item @click="${this._editModeEnable}"
                         >${this.hass!.localize(
                           "ui.panel.lovelace.menu.configure_ui"
@@ -230,7 +198,7 @@ class HUIRoot extends LitElement {
                   >
                     ${this.lovelace!.config.views.map(
                       (view) => html`
-                        <paper-tab>
+                        <paper-tab aria-label="${view.title}">
                           ${this._editMode
                             ? html`
                                 <ha-paper-icon-button-arrow-prev
@@ -309,6 +277,9 @@ class HUIRoot extends LitElement {
 
         ha-app-layout {
           min-height: 100%;
+        }
+        paper-menu-button {
+          padding: 0;
         }
         paper-tabs {
           margin-left: 12px;
@@ -396,6 +367,7 @@ class HUIRoot extends LitElement {
         views
       ) {
         navigate(this, `/lovelace/${views[0].path || 0}`, true);
+        newSelectView = 0;
       } else if (this._routeData!.view === "hass-unused-entities") {
         newSelectView = "hass-unused-entities";
       } else if (this._routeData!.view) {
@@ -437,15 +409,9 @@ class HUIRoot extends LitElement {
       if (force && newSelectView === undefined) {
         newSelectView = this._curView;
       }
-      this._selectView(newSelectView, force);
+      // Will allow for ripples to start rendering
+      afterNextRender(() => this._selectView(newSelectView, force));
     }
-  }
-
-  private get _notifications() {
-    return this._updateNotifications(
-      this.hass!.states,
-      this._persistentNotifications! || []
-    );
   }
 
   private get config(): LovelaceConfig {
@@ -470,18 +436,6 @@ class HUIRoot extends LitElement {
 
   private _routeDataChanged(ev): void {
     this._routeData = ev.detail.value;
-  }
-
-  private _handleNotificationsOpenChanged(ev): void {
-    this._notificationsOpen = ev.detail.value;
-  }
-
-  private _updateNotifications(
-    states: HassEntities,
-    persistent: unknown[]
-  ): unknown[] {
-    const configurator = computeNotifications(states);
-    return persistent.concat(configurator);
   }
 
   private _handleRefresh(): void {
@@ -561,10 +515,7 @@ class HUIRoot extends LitElement {
     scrollToTarget(this, this._layout.header.scrollTarget);
   }
 
-  private async _selectView(
-    viewIndex: HUIRoot["_curView"],
-    force: boolean
-  ): Promise<void> {
+  private _selectView(viewIndex: HUIRoot["_curView"], force: boolean): void {
     if (!force && this._curView === viewIndex) {
       return;
     }
@@ -585,15 +536,16 @@ class HUIRoot extends LitElement {
     }
 
     if (viewIndex === "hass-unused-entities") {
-      if (!loadedUnusedEntities) {
-        loadedUnusedEntities = true;
-        await import(/* webpackChunkName: "hui-unused-entities" */ "./hui-unused-entities");
-      }
       const unusedEntities = document.createElement("hui-unused-entities");
-      unusedEntities.setConfig(this.config);
-      unusedEntities.hass = this.hass!;
+      // Wait for promise to resolve so that the element has been upgraded.
+      import(/* webpackChunkName: "hui-unused-entities" */ "./hui-unused-entities").then(
+        () => {
+          unusedEntities.setConfig(this.config);
+          unusedEntities.hass = this.hass!;
+        }
+      );
       root.style.background = this.config.background || "";
-      root.appendChild(unusedEntities);
+      root.append(unusedEntities);
       return;
     }
 
@@ -608,8 +560,6 @@ class HUIRoot extends LitElement {
     if (!force && this._viewCache![viewIndex]) {
       view = this._viewCache![viewIndex];
     } else {
-      await new Promise((resolve) => afterNextRender(resolve));
-
       if (viewConfig.panel && viewConfig.cards && viewConfig.cards.length > 0) {
         view = createCardElement(viewConfig.cards[0]);
         view.isPanel = true;
@@ -625,7 +575,7 @@ class HUIRoot extends LitElement {
     view.hass = this.hass;
     root.style.background =
       viewConfig.background || this.config.background || "";
-    root.appendChild(view);
+    root.append(view);
   }
 
   private _loadResources(resources) {
